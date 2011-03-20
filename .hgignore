@@ -1,3 +1,4 @@
-\syntax: glob
+syntax:glob
 
+*.out
 .DS_Store
