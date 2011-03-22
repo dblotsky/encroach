@@ -2,3 +2,4 @@ syntax:glob
 
 *.out
 .DS_Store
+*.class

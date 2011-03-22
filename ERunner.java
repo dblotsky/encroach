@@ -10,26 +10,36 @@ public class ERunner {
     
     private String run(InputStream input, String[] args) {
         
+        // set up an input scanner
         Scanner in = new Scanner(input);
-		EBoard board = new EBoard(args);
+        
+        // set up a board
+        EBoard board = new EBoard(args);
+        board.randomize();
+        
+        System.out.println("Please enter a command.");
         
         // run the game
-        while( in.hasNextLine() ) {
-			
-			// print the board and ask for input
-			board.print();
-			board.prompt();
-			
-			// get the input
-			String line = in.nextLine();
-			String[] command = line.split(":");
-			
-			String command_name = command[0];
-			if(command_name == "display") {
-				 board.print();
-			}
-            board.execute(command);
-			
+        while(in.hasNextLine()) {
+            
+            // get the input
+            String line = in.nextLine();
+            String[] command = line.split(":");
+            
+            String command_name = command[0];
+            if(command_name.equals("display")) {
+                board.print();
+            } else if(command_name.equals("move")) {
+                board.make_move(command[1], command[2]);
+                board.print();
+            } else if(command_name.equals("randomize")) {
+                board.randomize();
+                board.print();
+            } else if(command_name.equals("")) {
+                System.out.println("Please enter a command.");
+            } else {
+                System.out.println("Unrecognized command: " + command_name + ".");
+            }
         }
 
         System.out.flush();
@@ -37,39 +47,93 @@ public class ERunner {
     }
     
     class ENode {
-		String owned;
-		
+        
+        // flag of ownership and the block's color
+        Boolean owned;
+        int color;
+        
         public ENode() {
-			
-		}
+            owned = false;
+            color = 0;
+        }
     }
     
     class EBoard {
-		
-		// player
-		String player;
-		
-		// board dimensions
-		int x_size;
-		int y_size;
-		
-		// playing field
-		ENode[][] field;
-		
+        
+        public static final int NUM_COLORS = 10;
+        public static final int X_DIMENSION = 20;
+        public static final int Y_DIMENSION = 50;
+        
+        // board dimensions
+        int x_size;
+        int y_size;
+        
+        // playing field
+        ENode[][] field;
+        
+        // random number generator
+        Random generator;
+        
         public EBoard(String[] args) {
-			x_size = 10;
-			y_size = 10;
-			player = "A";
-			field = new ENode()
-		}
-		
-		public execute(String[] command) {
-			String command_name = command[0];
-			if(command_name == "display") {
-				System.out.println("The board got printed.");
-			}
-			return;
-		}
+            
+            // initialize variables
+            this.x_size = X_DIMENSION;
+            this.y_size = Y_DIMENSION;
+
+            // start the random number generator
+            this.generator = new Random();
+            
+            // make a new playing field
+            this.field = new ENode[x_size][y_size];
+            for(int i = 0; i < this.x_size; i++) {
+                for(int j = 0; j < this.y_size; j++) {
+                    this.field[i][j] = new ENode();
+                }
+            }
+            
+            // set ownership of the top left node
+            field[0][0].owned = true;
+        }
+        
+        // prints the board
+        public void print() {
+            for(int i = 0; i < this.x_size; i++) {
+                String current_row = "";
+                for(int j = 0; j < this.y_size; j++) {
+                    current_row += this.field[i][j].color + " ";
+                }
+                System.out.println(current_row);
+            }
+            return;
+        }
+        
+        // randomizes the board; resets ownership
+        public void randomize() {
+            for(int i = 0; i < this.x_size; i++) {
+                for(int j = 0; j < this.y_size; j++) {
+                    field[i][j].color = generator.nextInt(NUM_COLORS);
+                    field[i][j].owned = false;
+                }
+            }
+            field[0][0].owned = true;
+            return;
+        }
+        
+        // makes a move for the given player and color
+        public void make_move(String player, String color) {
+            // make an array of booleans representing visited
+            // make a queue of squares to check by storing their indices: initially with the first square
+            // while queue not empty
+            //      pop the first square off the queue
+            //      for all adjacent squares, if (next color OR owned), AND (NOT already visited)
+            //          push into the queue
+            //      own this square, if it's not yet owned
+            //      paint this square to the next color, if not already that color
+            //      mark this square as visited
+            // when the loop exits, all reachable squares will have been traversed, owned, and painted
+            System.out.println("Player " + player + " changed color to " + color + ".");
+            return;
+        }
     }
 }
 
