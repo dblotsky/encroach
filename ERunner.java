@@ -29,8 +29,8 @@ public class ERunner {
             String command_name = command[0];
             if(command_name.equals("display")) {
                 board.print();
-            } else if(command_name.equals("move")) {
-                board.make_move(command[1], command[2]);
+            } else if(command_name.matches("^[0-9]$")) {
+                board.make_move(Integer.parseInt(command[0]));
                 board.print();
             } else if(command_name.equals("randomize")) {
                 board.randomize();
@@ -46,21 +46,25 @@ public class ERunner {
         return( "OK" );
     }
     
+    /// a square on the board
     class ENode {
         
-        // flag of ownership and the block's color
+        // flag of ownership, flag of being visited, and the block's color
         Boolean owned;
+        Boolean visited;
         int color;
         
         public ENode() {
-            owned = false;
-            color = 0;
+            owned   = false;
+            visited = false;
+            color   = 0;
         }
     }
     
+    /// the game board
     class EBoard {
         
-        public static final int NUM_COLORS = 10;
+        public static final int NUM_COLORS  = 4;
         public static final int X_DIMENSION = 20;
         public static final int Y_DIMENSION = 50;
         
@@ -73,6 +77,9 @@ public class ERunner {
         
         // random number generator
         Random generator;
+
+        // recursion depth testing
+        int max_depth;
         
         public EBoard(String[] args) {
             
@@ -93,9 +100,12 @@ public class ERunner {
             
             // set ownership of the top left node
             field[0][0].owned = true;
+            
+            // recursion depth testing
+            max_depth = 0;
         }
         
-        // prints the board
+        /// prints the board
         public void print() {
             for(int i = 0; i < this.x_size; i++) {
                 String current_row = "";
@@ -107,7 +117,7 @@ public class ERunner {
             return;
         }
         
-        // randomizes the board; resets ownership
+        /// randomizes the board; resets ownership
         public void randomize() {
             for(int i = 0; i < this.x_size; i++) {
                 for(int j = 0; j < this.y_size; j++) {
@@ -119,120 +129,78 @@ public class ERunner {
             return;
         }
         
-        // makes a move for the given player and color
-        public void make_move(String player, String color) {
-            // make an array of booleans representing visited
-            // make a queue of squares to check by storing their indices: initially with the first square
-            // while queue not empty
-            //      pop the first square off the queue
-            //      for all adjacent squares, if (next color OR owned), AND (NOT already visited)
-            //          push into the queue
-            //      own this square, if it's not yet owned
-            //      paint this square to the next color, if not already that color
-            //      mark this square as visited
-            // when the loop exits, all reachable squares will have been traversed, owned, and painted
-            System.out.println("Player " + player + " changed color to " + color + ".");
+        /// makes a move to the next color
+        public void make_move(int color) {
+            
+            // bail if the color is out of bounds
+            if(color >= NUM_COLORS || color < 0) {
+                return;
+            }
+            
+            // do a breadth-first search on the board, marking all reachable squares as owned, and changing color
+            move_helper(color, 0, 0, 0);
+            
+            // resets 'visited' flags on all squares
+            for(int i = 0; i < x_size; i++) {
+                for(int j = 0; j < y_size; j++) {
+                    field[i][j].visited = false;
+                }
+            }
+            
+            // print and reset recursion depth
+            System.out.println("Went " + Integer.toString(max_depth) + " iterations deep.");
+            max_depth = 0;
+            
+            System.out.println("Changed color to " + Integer.toString(color) + ".");
+            
+            return;
+        }
+        
+        // recursive function for breadth-first search
+        private void move_helper(int next_color, int x, int y, int depth) {
+            
+            // mark self as visited
+            field[x][y].visited = true;
+            
+            // recursion depth testing
+            depth += 1;
+            if(depth > max_depth) {
+                max_depth = depth;
+            }
+            
+            // recurse through all neighbors, if needed
+            if(x != 0) {
+                ENode top_node = field[x - 1][y];
+                if(!top_node.visited && (top_node.color == next_color || top_node.owned == true)) {
+                    move_helper(next_color, (x - 1), y, depth);
+                }
+            }
+            if(y != 0) {
+                ENode left_node = field[x][y - 1];
+                if(!left_node.visited && (left_node.color == next_color || left_node.owned == true)) {
+                    move_helper(next_color, x, (y - 1), depth);
+                }
+            }
+            if(x != (x_size - 1)) {
+                ENode bottom_node = field[x + 1][y];
+                if(!bottom_node.visited && (bottom_node.color == next_color || bottom_node.owned == true)) {
+                    move_helper(next_color, (x + 1), y, depth);
+                }
+            }
+            if(y != (y_size - 1)) {
+                ENode right_node = field[x][y + 1];
+                if(!right_node.visited && (right_node.color == next_color || right_node.owned == true)) {
+                    move_helper(next_color, x, (y + 1), depth);
+                }
+            }
+            
+            // switch the cell's color
+            field[x][y].color = next_color;
+            field[x][y].owned = true;
+            
+            this.display();
+            
             return;
         }
     }
 }
-
-/* 
-public class Encroach extends JPanel {
-  
-  //Back end
-  ESquare[][] colorBoard;
-  Boolean[][] checkBoard;
-  Color colorsAvailable[];
-  int sizex;
-  int sizey;
-  int blockSize;
-
-  //Front end
-  JPanel gameBoard;
-  Image buffer;
-
-  public static void main (String[] args){
-    final Encroach main = new Encroach();
-  }
-
-  public Encroach () {
-     
-    JFrame frame = new JFrame();
-        frame.setVisible(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
-
-    //init back end
-    sizex = 20;
-    sizey = 20;
-    blockSize = 20;
-    colorsAvailable = new Color[] {Color.BLUE,Color.RED,Color.YELLOW,Color.GREEN};
-    initBoard();
-
-    //action listeners
-
-    //init front end
-     gameBoard = new JPanel();
-    //gameBoard.setBackground(Color.BLACK);
-    frame.add(gameBoard);
-   
-    setVisible(true);
-    displayBoard();
-  }
-
-  public void initBoard (){
-    colorBoard = new ESquare[sizex][sizey];
-    for (int j = 0; j < sizey; j++){
-      for (int i = 0; i < sizex; i++){
-        colorBoard[i][j] = new ESquare(colorsAvailable);
-      }
-    }
-  }
-
-  public void displayBoard(){
-    buffer = createImage(gameBoard.getWidth(),gameBoard.getHeight());
-        Graphics g = buffer.getGraphics();
-    for (int j = 0; j < sizey; j++){
-      for (int i = 0; i < sizex; i++){
-        g.setColor(colorBoard[i][j].color);
-        paintSquare(i,j,g);    
-      }
-    }
-    Graphics draw = gameBoard.getGraphics();
-    draw.drawImage(buffer,0,0,gameBoard); 
-  }
-
-  public void paintSquare(int x, int y, Graphics g){
-        g.fillRect(x * blockSize,y * blockSize,blockSize,blockSize);
-        Color old = g.getColor();
-        g.setColor(Color.BLACK);
-        g.drawRect(x * blockSize,y * blockSize,blockSize,blockSize);
-        g.setColor(old);
-    }
-}
-
-public class ESquare {
-
-  public Color color;
-  public Boolean owned;
-
-  public ESquare (Color[] colorsAvailable){
-    int n  = (int) Math.floor((Math.random()*colorsAvailable.length));
-    this.color = colorsAvailable[n];
-    this.owned = false;
-  }
-  public Boolean check(Color compare){
-    if (compare == this.color){
-      this.owned = true;
-      return true;
-    }
-    return false;
-  }
-  public void shift(Color thatColor){
-    if (owned){
-      this.color = thatColor;
-    }
-  }
-}
-*/
