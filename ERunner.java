@@ -64,9 +64,9 @@ public class ERunner {
     /// the game board
     class EBoard {
         
-        public static final int NUM_COLORS  = 4;
-        public static final int X_DIMENSION = 20;
-        public static final int Y_DIMENSION = 50;
+        public static final int NUM_COLORS  = 6;
+        public static final int X_DIMENSION = 28;
+        public static final int Y_DIMENSION = 28;
         
         // board dimensions
         int x_size;
@@ -108,15 +108,33 @@ public class ERunner {
         /// prints the board
         public void print() {
             for(int i = 0; i < this.x_size; i++) {
-                String current_row = "";
                 for(int j = 0; j < this.y_size; j++) {
-                    current_row += this.field[i][j].color + " ";
+                    System.out.printf(color_number(this.field[i][j].color) + " ");
                 }
-                System.out.println(current_row);
+                System.out.printf("\n");
             }
             return;
         }
         
+        // returns a console-coloured number
+        // ONLY works for up to 6 colors
+        private String color_number(int n) {
+            if(n == 0) {
+                return "\033[31m0\033[m";
+            } else if(n == 1) {
+                return "\033[32m1\033[m";
+            } else if(n == 2) {
+                return "\033[33m2\033[m";
+            } else if(n == 3) {
+                return "\033[34m3\033[m";
+            } else if(n == 4) {
+                return "\033[35m4\033[m";
+            } else if(n == 5) {
+                return "\033[36m5\033[m";
+            }
+            return "";
+        }
+                
         /// randomizes the board; resets ownership
         public void randomize() {
             for(int i = 0; i < this.x_size; i++) {
@@ -198,7 +216,7 @@ public class ERunner {
             field[x][y].color = next_color;
             field[x][y].owned = true;
             
-            this.display();
+            // this.display();
             
             return;
         }
