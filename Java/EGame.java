@@ -9,7 +9,7 @@ import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
-public class Encroach extends JPanel {
+public class EGame extends JPanel {
   
   //Back end
   ESquare[][] colorBoard;
@@ -27,7 +27,7 @@ public class Encroach extends JPanel {
     final Encroach main = new Encroach();
   }
 
-  public Encroach () {
+  public EGame () {
      
     JFrame frame = new JFrame();
 		frame.setVisible(false);
