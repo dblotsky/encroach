@@ -159,7 +159,7 @@ class EBoard {
     
     /// Prints a prompt for input.
     public String prompt() {
-        return "Please enter a number between 0 and " + (this.num_colors - 1) + ": ";
+        return "Please enter a number between \033[1m0 and " + (this.num_colors - 1) + "\033[m: ";
     }
     
     /// Resets 'visited' flags on all squares.

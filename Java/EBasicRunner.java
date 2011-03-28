@@ -11,6 +11,30 @@ public class EBasicRunner {
         return;
     }
     
+    /// Prints the rules of the game and prints how to play.
+    public void print_rules() {
+        System.out.println("--------------------------------------------");
+        System.out.println("Type these commands to play:");
+        System.out.println("");
+        System.out.println("    reset         - resets board");
+        System.out.println("    q|quit|exit   - quits the game");
+        System.out.println("    digit         - makes a move");
+        System.out.println("    score         - prints the score");
+        System.out.println("    display       - prints the board");
+        System.out.println("    rules         - prints these rules");
+        System.out.println("");
+        System.out.println("--------------------------------------------");
+        System.out.println("Rules:");
+        System.out.println("");
+        System.out.println("    - you start in top left corner");
+        System.out.println("    - opponent starts in bottom right corner");
+        System.out.println("    - you can't choose the opponent's color");
+        System.out.println("    - game ends when no squares are neutral");
+        System.out.println("");
+        System.out.println("--------------------------------------------");
+        return;
+    }
+    
     /// The main run loop of EBasicRunner.
     private String run(InputStream input, String[] args) {
         
@@ -47,9 +71,11 @@ public class EBasicRunner {
         System.out.println("");
         System.out.println("            \033[1mWelcome to Encroach!\033[m            ");
         print_rules();
+        System.out.println("");
         
         // print the board, and prompt for input
         board.print_terminal_colored();
+        System.out.println("");
         System.out.print(board.prompt());
         
         // run the game
@@ -92,7 +118,6 @@ public class EBasicRunner {
                     // if not, complain
                     } else {
                         System.out.println("----- Illegal move: " + human_next_color.to_terminal_colored_string(true) + ". -----");
-                        System.out.println("");
                     }
                 }
                 
@@ -106,7 +131,10 @@ public class EBasicRunner {
             // printing the score
             } else if(line_in.equals("score")) {
                 System.out.println(board.score());
-                System.out.println("");
+            
+            // clarifying
+            } else if(line_in.equals("digit")) {
+                System.out.println("No, an \033[1mactual\033[m digit, like the prompt is asking.");
             
             // displaying the rules
             } else if(line_in.equals("rules")) {
@@ -123,48 +151,28 @@ public class EBasicRunner {
             
             // complaining
             } else {
-                System.out.println("Unrecognized input: \"" + line_in + "\".");
-                System.out.println("");
+                System.out.println("Unrecognized input. I won't reprint it. Look at it yourself.");
             }
             
             // prompt for input
+            System.out.println("");
             System.out.print(board.prompt());
             
             if(board.has_winner()) {
+                System.out.println("");
+                System.out.println("");
                 break;
             }
         }
         
         board.print_terminal_colored();
+        System.out.println("");
         System.out.println(board.winner());
         System.out.println(board.score());
+        System.out.println("");
         
         // exit gracefully
         System.out.flush();
         return( "OK" );
-    }
-    
-    public void print_rules() {
-        System.out.println("--------------------------------------------");
-        System.out.println("Type these commands to play:");
-        System.out.println("");
-        System.out.println("    reset         - resets board");
-        System.out.println("    q|quit|exit   - quits the game");
-        System.out.println("    a digit       - makes a move");
-        System.out.println("    score         - prints the score");
-        System.out.println("    display       - prints the board");
-        System.out.println("    rules         - prints these rules");
-        System.out.println("");
-        System.out.println("--------------------------------------------");
-        System.out.println("Rules:");
-        System.out.println("");
-        System.out.println("    - you start in top left corner");
-        System.out.println("    - opponent starts in bottom right corner");
-        System.out.println("    - you can't choose the opponent's color");
-        System.out.println("    - game ends when no squares are neutral");
-        System.out.println("");
-        System.out.println("--------------------------------------------");
-        System.out.println("");
-        return;
     }
 }
