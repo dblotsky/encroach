@@ -159,7 +159,7 @@ class EBoard {
     
     /// Prints a prompt for input.
     public String prompt() {
-        return "Please enter a number between \033[1m0 and " + (this.num_colors - 1) + "\033[m: ";
+        return "Enter digit within \033[1m0\033[m - \033[1m" + (this.num_colors - 1) + "\033[m (but not " + this.player_2.get_color().to_terminal_colored_string(true) + "): ";
     }
     
     /// Resets 'visited' flags on all squares.

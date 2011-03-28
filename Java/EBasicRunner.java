@@ -141,7 +141,7 @@ public class EBasicRunner {
                 print_rules();
             
             // displaying the board
-            } else if(line_in.equals("display")) {
+            } else if(line_in.equals("display") || line_in.equals("")) {
                 board.print_terminal_colored();
             
             // quitting the game
