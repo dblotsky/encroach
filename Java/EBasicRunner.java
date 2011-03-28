@@ -19,20 +19,29 @@ public class EBasicRunner {
         
         // 'constants'
         int NUM_COLORS  = 6;
-        int X_DIMENSION = 30; // 30
-        int Y_DIMENSION = 30; // 30
+        int X_DIMENSION = 20; // 30
+        int Y_DIMENSION = 20; // 30
         
         // make a human player and an AI player
-        EPlayer human    = new EPlayer("Dmitry", 0);
-        EPlayer computer = new EPlayer("AI_1", 0);
+        EPlayer human    = new EPlayer("Human player", 0);
+        EPlayer computer = new EPlayer("AI player", 0);
         
         // set up and randomize a new board
         EBoard board = new EBoard(args, NUM_COLORS, X_DIMENSION, Y_DIMENSION);
         board.initialize(human, computer);
         
         // welcome the player to the game
-        System.out.println("Welcome to Encroach!");
-        System.out.println("--------------------");
+        System.out.println("");
+        System.out.println("       Welcome to Encroach!       ");
+        System.out.println("----------------------------------");
+        System.out.println("Type these commands to play:");
+        System.out.println("");
+        System.out.println("    reset         - resets board");
+        System.out.println("    q|quit|exit   - quits the game");
+        System.out.println("    [0-9]         - makes a move");
+        System.out.println("");
+        System.out.println("----------------------------------");
+        System.out.println("");
         
         // print the board, and prompt for input
         board.print_terminal_colored();
@@ -43,6 +52,7 @@ public class EBasicRunner {
             
             // get player's input
             String line_in = in.nextLine();
+            System.out.println("");
             
             // making a move
             if(line_in.matches("^[0-9]$")) {
@@ -69,13 +79,14 @@ public class EBasicRunner {
                     
                     // if not, complain
                     } else {
-                        System.out.println("Illegal move: " + human_next_color.to_terminal_colored_string() + ".");
+                        System.out.println("----- Illegal move: " + human_next_color.to_terminal_colored_string() + ". -----");
+                        System.out.println("");
                     }
                 }
             // resetting the game
             } else if(line_in.equals("reset")) {
                 board.reset();
-                System.err.println("DEBUG: The board has been reset.");
+                // System.err.println("DEBUG: The board has been reset.");
             
             // quitting the game
             } else if(line_in.equals("q") || line_in.equals("quit") || line_in.equals("exit")) {
