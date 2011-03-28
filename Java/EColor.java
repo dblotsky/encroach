@@ -17,20 +17,26 @@ class EColor {
     }
     
     /// Returns the color as a string formatted to display colored in a Linux terminal.
-    public String to_terminal_colored_string() {
+    public String to_terminal_colored_string(Boolean neutral) {
         int n = this.value;
+        
+        String extra_tags = "";
+        if(!neutral) {
+            extra_tags = "\033[1m";
+        }
+        
         if(n == 0) {
-            return "\033[31m0\033[m";
+            return extra_tags + "\033[31m0\033[m";
         } else if(n == 1) {
-            return "\033[32m1\033[m";
+            return extra_tags + "\033[32m1\033[m";
         } else if(n == 2) {
-            return "\033[33m2\033[m";
+            return extra_tags + "\033[33m2\033[m";
         } else if(n == 3) {
-            return "\033[34m3\033[m";
+            return extra_tags + "\033[34m3\033[m";
         } else if(n == 4) {
-            return "\033[35m4\033[m";
+            return extra_tags + "\033[35m4\033[m";
         } else if(n == 5) {
-            return "\033[36m5\033[m";
+            return extra_tags + "\033[36m5\033[m";
         }
         return "";
     }

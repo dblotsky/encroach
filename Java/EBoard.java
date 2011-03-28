@@ -123,6 +123,7 @@ class EBoard {
         make_move(this.player_1, this.player_1.get_color());
         make_move(this.player_2, this.player_2.get_color());
         
+        // System.err.println("DEBUG: The board has been reset.");
         return;
     }
     
@@ -138,7 +139,7 @@ class EBoard {
     public void print_terminal_colored() {
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
-                System.out.printf(this.field[i][j].get_color().to_terminal_colored_string() + " ");
+                System.out.printf(this.field[i][j].get_color().to_terminal_colored_string((this.field[i][j].get_owner() == this.neutral_owner)) + " ");
             }
             System.out.printf("\n");
         }
@@ -289,7 +290,8 @@ class EBoard {
     
     /// Returns true if either player's score is equal to or greater than the winning score.
     public Boolean has_winner() {
-        return ((this.player_1.score >= this.winning_score) || (this.player_2.score >= this.winning_score));
+        return this.neutral_owner.score == 0;
+        // return ((this.player_1.score >= this.winning_score) || (this.player_2.score >= this.winning_score));
     }
     
     /// Returns the winner of the game.
@@ -298,5 +300,10 @@ class EBoard {
             return this.player_1.name + " wins.";
         }
         return this.player_2.name + " wins.";
+    }
+    
+    /// Returns the current score.
+    public String score() {
+        return this.player_1.name + ": " + this.player_1.score + ", " + this.player_2.name + ": " + this.player_2.score + ".";
     }
 }

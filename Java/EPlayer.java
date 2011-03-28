@@ -70,6 +70,9 @@ class EPlayer extends EOwner implements EPlayable {
     /// Returns the AI's next choice of color.
     public EColor ai_next_color_choice(EGenerator generator) {
         EColor new_color = new EColor(generator.next_color_value());
+        while(new_color.equals(this.color)) {
+            new_color = new EColor(generator.next_color_value());
+        }
         return new_color;
     }
 }
