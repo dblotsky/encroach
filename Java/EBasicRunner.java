@@ -98,10 +98,10 @@ public class EBasicRunner {
                 } else {
                     
                     EColor human_next_color     = new EColor(color_initializer);
-                    EColor computer_next_color  = computer.ai_next_color_choice(board.generator);
+                    EColor computer_next_color  = computer.ai_next_color_choice(board);
                     
                     while(human_next_color.equals(computer_next_color)) {
-                        computer_next_color  = computer.ai_next_color_choice(board.generator);
+                        computer_next_color  = computer.ai_next_color_choice(board);
                     }
                     
                     // if it's a valid move, make it

@@ -8,6 +8,7 @@ class ESquare {
     EOwner  owner;
     EColor  color;
     Boolean visited;
+    Boolean border;
     int     x_coord;
     int     y_coord;
     
@@ -15,6 +16,7 @@ class ESquare {
         this.owner   = null;
         this.color   = new EColor(0);
         this.visited = false;
+        this.border  = false;
         this.x_coord = ECKS;
         this.y_coord = WHY;
     }

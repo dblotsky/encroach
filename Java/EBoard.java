@@ -139,7 +139,7 @@ class EBoard {
     public void print_terminal_colored() {
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
-                System.out.printf(this.field[i][j].get_color().to_terminal_colored_string((this.field[i][j].get_owner() == this.neutral_owner)) + " ");
+                System.out.printf(this.field[i][j].get_color().to_terminal_colored_string(!this.field[i][j].border/*(this.field[i][j].get_owner() == this.neutral_owner)*/) + " ");
             }
             System.out.printf("\n");
         }
@@ -171,6 +171,17 @@ class EBoard {
         }
     }
     
+    /// Resets 'border' flags on squares bordering the given player's territory.
+    public void reset_border(EPlayer player) {
+        for(int i = 0; i < this.field.length; i++) {
+            for(int j = 0; j < this.field[i].length; j++) {
+                if(this.field[i][j].get_owner() == player) {
+                    this.field[i][j].border = false;
+                }
+            }
+        }
+    }
+    
     /// Makes a move to the next color for the player.
     public void make_move(EPlayer player, EColor next_color) {
         
@@ -188,18 +199,22 @@ class EBoard {
         // remember the opponent for convenience
         EPlayer opponent = player.get_opponent();
         
-        // conquer connected squares
+        // clear border flags for this player
+        reset_border(player);
+        
+        // conquer newly connected squares
         traverse_owned(player, next_color, player.starting_square.x_coord, player.starting_square.y_coord);
         reset_visited();
         
-        // mark all squares that the opponent can reach
+        // determine all squares that the opponent cannot reach
         traverse_reachable(opponent, opponent.starting_square.x_coord, opponent.starting_square.y_coord);
         
-        // go over all squares and conquer the ones that were not marked
+        // now conquer all squares that the opponent cannot reach
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
                 if(!this.field[i][j].visited) {
                     conquer(this.field[i][j], player);
+                    // also clear borders
                 }
             }
         }
@@ -224,29 +239,37 @@ class EBoard {
         // mark self as visited
         this.field[x][y].visited = true;
         
-        // recurse through all neighbors, if they exist
+        // recurse through all neighbors, if they exist and fit traversal conditions
         if(x != 0) {
             ESquare top_square = this.field[x - 1][y];
-            if(!top_square.visited && top_square.conquered_this_turn(next_color, player)) {
-                traverse_owned(player, next_color, (x - 1), y);
+            if(!top_square.visited) {
+                if(top_square.conquered_this_turn(next_color, player)) {
+                    traverse_owned(player, next_color, (x - 1), y);
+                }
             }
         }
         if(y != 0) {
             ESquare left_square = this.field[x][y - 1];
-            if(!left_square.visited && left_square.conquered_this_turn(next_color, player)) {
-                traverse_owned(player, next_color, x, (y - 1));
+            if(!left_square.visited) {
+                if(left_square.conquered_this_turn(next_color, player)) {
+                    traverse_owned(player, next_color, x, (y - 1));
+                }
             }
         }
         if(x != (x_size - 1)) {
             ESquare bottom_square = this.field[x + 1][y];
-            if(!bottom_square.visited && bottom_square.conquered_this_turn(next_color, player)) {
-                traverse_owned(player, next_color, (x + 1), y);
+            if(!bottom_square.visited) {
+                if(bottom_square.conquered_this_turn(next_color, player)) {
+                    traverse_owned(player, next_color, (x + 1), y);
+                }
             }
         }
         if(y != (y_size - 1)) {
             ESquare right_square = this.field[x][y + 1];
-            if(!right_square.visited && right_square.conquered_this_turn(next_color, player)) {
-                traverse_owned(player, next_color, x, (y + 1));
+            if(!right_square.visited) {
+                if(right_square.conquered_this_turn(next_color, player)) {
+                    traverse_owned(player, next_color, x, (y + 1));
+                }
             }
         }
         
@@ -264,26 +287,42 @@ class EBoard {
         // recurse through all neighbors, if they exist
         if(x != 0) {
             ESquare top_square = this.field[x - 1][y];
-            if(!top_square.visited && top_square.conquerable_by_player(player)) {
-                traverse_reachable(player, (x - 1), y);
+            if(!top_square.visited) {
+                if(top_square.conquerable_by_player(player)) {
+                    traverse_reachable(player, (x - 1), y);
+                } else {
+                    top_square.border = true;
+                }
             }
         }
         if(y != 0) {
             ESquare left_square = this.field[x][y - 1];
-            if(!left_square.visited && left_square.conquerable_by_player(player)) {
-                traverse_reachable(player, x, (y - 1));
+            if(!left_square.visited) {
+                if(left_square.conquerable_by_player(player)) {
+                    traverse_reachable(player, x, (y - 1));
+                } else {
+                    left_square.border = true;
+                }
             }
         }
         if(x != (x_size - 1)) {
             ESquare bottom_square = this.field[x + 1][y];
-            if(!bottom_square.visited && bottom_square.conquerable_by_player(player)) {
-                traverse_reachable(player, (x + 1), y);
+            if(!bottom_square.visited) {
+                if(bottom_square.conquerable_by_player(player)) {
+                    traverse_reachable(player, (x + 1), y);
+                } else {
+                    bottom_square.border = true;
+                }
             }
         }
         if(y != (y_size - 1)) {
             ESquare right_square = this.field[x][y + 1];
-            if(!right_square.visited && right_square.conquerable_by_player(player)) {
-                traverse_reachable(player, x, (y + 1));
+            if(!right_square.visited) {
+                if(right_square.conquerable_by_player(player)) {
+                    traverse_reachable(player, x, (y + 1));
+                } else {
+                    right_square.border = true;
+                }
             }
         }
     }

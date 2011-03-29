@@ -68,10 +68,11 @@ class EPlayer extends EOwner implements EPlayable {
     }
     
     /// Returns the AI's next choice of color.
-    public EColor ai_next_color_choice(EGenerator generator) {
-        EColor new_color = new EColor(generator.next_color_value());
+    public EColor ai_next_color_choice(EBoard board) {
+        
+        EColor new_color = new EColor(board.generator.next_color_value());
         while(new_color.equals(this.color)) {
-            new_color = new EColor(generator.next_color_value());
+            new_color = new EColor(board.generator.next_color_value());
         }
         return new_color;
     }
@@ -94,7 +95,7 @@ interface EPlayable {
     public EPlayer  get_opponent();
     
     // AI functions
-    public EColor   ai_next_color_choice(EGenerator generator);
+    public EColor   ai_next_color_choice(EBoard board);
 }
 
 /// A neutral owner.
