@@ -157,9 +157,14 @@ class EBoard {
         return;
     }
     
+    /// Prints a colored prompt for input.
+    public String prompt_terminal_colored() {
+        return "Enter digit within \033[1m0\033[m - \033[1m" + (this.num_colors - 1) + "\033[m (but not " + this.player_2.get_color().to_terminal_colored_string(true) + "): ";
+    }
+    
     /// Prints a prompt for input.
     public String prompt() {
-        return "Enter digit within \033[1m0\033[m - \033[1m" + (this.num_colors - 1) + "\033[m (but not " + this.player_2.get_color().to_terminal_colored_string(true) + "): ";
+        return "Enter digit within 0 - " + (this.num_colors - 1) + "(but not " + this.player_2.get_color().to_string() + "): ";
     }
     
     /// Resets 'visited' flags on all squares.
