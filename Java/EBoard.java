@@ -164,7 +164,7 @@ class EBoard {
     
     /// Prints a prompt for input.
     public String prompt() {
-        return "Enter digit within 0 - " + (this.num_colors - 1) + "(but not " + this.player_2.get_color().to_string() + "): ";
+        return "Enter digit within 0 - " + (this.num_colors - 1) + " (but not " + this.player_2.get_color().to_string() + "): ";
     }
     
     /// Resets 'visited' flags on all squares.
