@@ -9,12 +9,26 @@ EPlayer:
     int         get_color()
     int         ai_next_color_choice(EBoard board)
 
+EOwner:
+    
+    int         get_score()
+    void        set_name(String new_name)
+    String      get_name()
+
 EBoard:
     
     EBoard      EBoard(int num_colors, int x_size, int y_size)
     void        initialize(EPlayer player_1, EPlayer player_2)
     void        reset()
-    Boolean     can_play(EPlayer player, EColor color)
-    void        play_color(EPlayer player, EColor next_color)
+    Boolean     can_play(EPlayer player, int color)
+    void        play_color(EPlayer player, int next_color)
     Boolean     winner_exists()
     EPlayer     winner()
+
+ESquare:
+    
+    int         get_color()
+    EOwner      get_owner()
+    int         x_coord
+    int         y_coord
+

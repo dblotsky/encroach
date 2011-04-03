@@ -280,6 +280,11 @@ class EBoard {
         // return ((this.player_1.score >= this.winning_score) || (this.player_2.score >= this.winning_score));
     }
     
+    /// Returns the game field.
+    public ESquare[][] get_field() {
+        return this.field;
+    }
+    
     /// Returns the winner of the game.
     public EPlayer winner() {
         if(!winner_exists) {
