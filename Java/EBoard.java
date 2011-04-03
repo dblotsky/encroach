@@ -105,7 +105,7 @@ class EBoard {
     }
     
     /// Returns false if the given color is equal to the player's opponent's color.
-    public Boolean can_play(EPlayer player, EColor color) {
+    public Boolean can_play(EPlayer player, int color) {
         if(color == player.get_opponent().get_color()) {
             return false;
         }
@@ -133,7 +133,7 @@ class EBoard {
     }
     
     /// Makes a move to the next color for the player.
-    public void play_color(EPlayer player, EColor next_color) {
+    public void play_color(EPlayer player, int next_color) {
                 
         // bail if the move is illegal
         if(!can_play(player, next_color)) {
@@ -181,7 +181,7 @@ class EBoard {
     }
     
     /// Performs a recursive breadth-first search on the board, conquering squares for the player.
-    private void traverse_owned(EPlayer player, EColor next_color, int x, int y) {
+    private void traverse_owned(EPlayer player, int next_color, int x, int y) {
         
         // mark self as visited
         this.field[x][y].visited = true;
