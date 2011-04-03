@@ -108,8 +108,9 @@ class EPlayer extends EOwner implements EPlayable {
     
     /// Returns the AI's next choice of color.
     public int ai_next_color_choice(EBoard board) {
+        int color_choice = 0;
         if(this.ai_difficulty == 0) {
-            int color_choice = (int) Math.floor(Math.random() * board.num_colors);
+            color_choice = (int) Math.floor(Math.random() * board.num_colors);
             while(color_choice == this.color) {
                 color_choice = (int) Math.floor(Math.random() * board.num_colors);
             }

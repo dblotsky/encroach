@@ -190,7 +190,7 @@ class EBoard {
         if(x != 0) {
             ESquare top_square = this.field[x - 1][y];
             if(!top_square.visited) {
-                if(top_square.conquered_this_turn(next_color, player)) {
+                if(top_square.conquered_by_move(next_color, player)) {
                     traverse_owned(player, next_color, (x - 1), y);
                 }
             }
@@ -198,7 +198,7 @@ class EBoard {
         if(y != 0) {
             ESquare left_square = this.field[x][y - 1];
             if(!left_square.visited) {
-                if(left_square.conquered_this_turn(next_color, player)) {
+                if(left_square.conquered_by_move(next_color, player)) {
                     traverse_owned(player, next_color, x, (y - 1));
                 }
             }
@@ -206,7 +206,7 @@ class EBoard {
         if(x != (x_size - 1)) {
             ESquare bottom_square = this.field[x + 1][y];
             if(!bottom_square.visited) {
-                if(bottom_square.conquered_this_turn(next_color, player)) {
+                if(bottom_square.conquered_by_move(next_color, player)) {
                     traverse_owned(player, next_color, (x + 1), y);
                 }
             }
@@ -214,7 +214,7 @@ class EBoard {
         if(y != (y_size - 1)) {
             ESquare right_square = this.field[x][y + 1];
             if(!right_square.visited) {
-                if(right_square.conquered_this_turn(next_color, player)) {
+                if(right_square.conquered_by_move(next_color, player)) {
                     traverse_owned(player, next_color, x, (y + 1));
                 }
             }
@@ -287,7 +287,7 @@ class EBoard {
     
     /// Returns the winner of the game.
     public EPlayer winner() {
-        if(!winner_exists) {
+        if(!winner_exists()) {
             System.err.println("ERROR: There is no winner yet.");
             return null;
         }

@@ -24,6 +24,7 @@ EBoard:
     void        play_color(EPlayer player, int next_color)
     Boolean     winner_exists()
     EPlayer     winner()
+    ESquare[][] get_field()
 
 ESquare:
     

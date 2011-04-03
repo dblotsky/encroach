@@ -64,8 +64,8 @@ class ESquare {
     }
     
     /// Returns true if this square will be conquered by this move.
-    public Boolean conquered_by_move(EColor next_color, EPlayer conqueror) {
-        if(this.color.equals(next_color) || this.owner == conqueror) {
+    public Boolean conquered_by_move(int next_color, EPlayer conqueror) {
+        if(this.color == next_color || this.owner == conqueror) {
             return true;
         }
         return false;
