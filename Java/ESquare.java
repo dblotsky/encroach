@@ -5,20 +5,26 @@ import java.io.*;
 /// A square on the board.
 class ESquare {
     
+    // owner and color
     EOwner  owner;
-    EColor  color;
+    int     color;
+    
+    // state flags
     Boolean visited;
     Boolean border;
+    
+    // coordinates: may be deprecated if irregular boards are supported
     int     x_coord;
     int     y_coord;
     
-    public ESquare(int ECKS, int WHY) {
+    /// Creates a new unowned square with COLOR_0.
+    public ESquare(int x_coord, int y_coord) {
         this.owner   = null;
-        this.color   = new EColor(0);
+        this.color   = 0;
         this.visited = false;
         this.border  = false;
-        this.x_coord = ECKS;
-        this.y_coord = WHY;
+        this.x_coord = x_coord;
+        this.y_coord = y_coord;
     }
     
     /// Switches the square's owner to the given owner.
@@ -33,20 +39,19 @@ class ESquare {
     }
     
     /// Switches the square's color to the given color.
-    public void set_color(EColor new_color) {
+    public void set_color(int new_color) {
         this.color = new_color;
         return;
     }
     
     /// Returns the square's color.
-    public EColor get_color() {
+    public int get_color() {
         return this.color;
     }
     
     /// Randomizes the square's color.
-    public void randomize_color(EGenerator generator) {
-        EColor new_color = new EColor(generator.next_color_value());
-        this.color = new_color;
+    public void randomize_color(int num_colors) {
+        this.color = (int) Math.floor(Math.random() * num_colors);
         return;
     }
     
@@ -58,8 +63,8 @@ class ESquare {
         return true;
     }
     
-    /// Returns true if this square is to be conquered this turn.
-    public Boolean conquered_this_turn(EColor next_color, EPlayer conqueror) {
+    /// Returns true if this square will be conquered by this move.
+    public Boolean conquered_by_move(EColor next_color, EPlayer conqueror) {
         if(this.color.equals(next_color) || this.owner == conqueror) {
             return true;
         }

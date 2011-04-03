@@ -29,6 +29,87 @@ public class EBasicRunner {
 		}
 	}
     
+    
+    /*
+    /// Returns the color as a string formatted to display colored in a Linux terminal.
+    public String to_terminal_colored_string(Boolean neutral) {
+        
+        int n = this.value;
+        
+        String extra_tags = "";
+        if(!neutral) {
+            extra_tags = "\033[1m";
+        }
+        
+        String display_character = "#";
+        display_character = Integer.toString(n);
+        
+        if(n == 0) {
+            return extra_tags + "\033[31m" + display_character + "\033[m";
+        } else if(n == 1) {
+            return extra_tags + "\033[32m" + display_character + "\033[m";
+        } else if(n == 2) {
+            return extra_tags + "\033[33m" + display_character + "\033[m";
+        } else if(n == 3) {
+            return extra_tags + "\033[34m" + display_character + "\033[m";
+        } else if(n == 4) {
+            return extra_tags + "\033[35m" + display_character + "\033[m";
+        } else if(n == 5) {
+            return extra_tags + "\033[36m" + display_character + "\033[m";
+        }
+        return "";
+    }*/
+    
+    /*
+    /// Returns the color as a basic sting.
+    public String to_string() {
+        return Integer.toString(this.value);
+    }
+    */
+    
+    /*
+    /// Prints the board to stdout in coloured terminal format.
+    public void print_terminal_colored() {
+        for(int i = 0; i < this.field.length; i++) {
+            for(int j = 0; j < this.field[i].length; j++) {
+                System.out.printf(this.field[i][j].get_color().to_terminal_colored_string(!this.field[i][j].border) + " ");
+            }
+            System.out.printf("\n");
+        }
+        return;
+    }
+    
+    /// Prints the board to stdout in simplest format.
+    public void print_simple() {
+        for(int i = 0; i < this.field.length; i++) {
+            for(int j = 0; j < this.field[i].length; j++) {
+                System.out.printf(this.field[i][j].get_color().to_string() + " ");
+            }
+            System.out.printf("\n");
+        }
+        return;
+    }
+    */
+    
+    /*
+    /// Returns a colored prompt for input.
+    public String prompt_terminal_colored() {
+        return "Enter digit within \033[1m0\033[m - \033[1m" + (this.num_colors - 1) + "\033[m (but not " + this.player_2.get_color().to_terminal_colored_string(true) + "): ";
+    }
+    
+    /// Returns a prompt for input.
+    public String prompt() {
+        return "Enter digit within 0 - " + (this.num_colors - 1) + " (but not " + this.player_2.get_color().to_string() + "): ";
+    }
+    */
+    
+    /*
+    /// Returns the current score.
+    public String score() {
+        return this.player_1.name + ": " + this.player_1.score + ", " + this.player_2.name + ": " + this.player_2.score + ".";
+    }
+    */
+    
     /// Prints various helful text.
     public void print_text(String text) {
         if(text.equals("options")) {
@@ -172,7 +253,7 @@ public class EBasicRunner {
         EPlayer computer = new EPlayer("AI player", 0);
         
         // set up and randomize a new board
-        EBoard board = new EBoard(args, NUM_COLORS, X_DIMENSION, Y_DIMENSION);
+        EBoard board = new EBoard(NUM_COLORS, X_DIMENSION, Y_DIMENSION);
         board.initialize(human, computer);
         
         // welcome the player to the game
