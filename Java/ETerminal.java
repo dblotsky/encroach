@@ -2,12 +2,12 @@ import java.util.*;
 import java.math.*;
 import java.io.*;
 
-/// This is a basic runner class for Encroach, providing an interface to an EBoard.
-public class EBasicRunner {
+/// The terminal version of Encroach.
+public class ETerminal {
     
     /// Makes an instance of itself, and runs it.
     public static final void main(String[] args) {
-        new EBasicRunner().run(System.in, args);
+        new ETerminal().run(System.in, args);
         return;
     }
 	
@@ -195,6 +195,7 @@ public class EBasicRunner {
     /// The main run loop of EBasicRunner.
     private String run(InputStream input, String[] args) {
         
+        // display help if asked for help
         try {
             if(
                 args[0].equals("help") || 

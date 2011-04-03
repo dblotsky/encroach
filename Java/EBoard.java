@@ -106,7 +106,7 @@ class EBoard {
     
     /// Returns false if the given color is equal to the player's opponent's color.
     public Boolean can_play(EPlayer player, int color) {
-        if(color == player.get_opponent().get_color()) {
+        if(color == player.get_opponent().get_color() || (color < 0 || color >= this.num_colors) || color == player.get_color()) {
             return false;
         }
         return true;
