@@ -8,6 +8,8 @@ EPlayer:
     String      get_name()
     int         get_color()
     int         ai_next_color_choice(EBoard board)
+    int         x_size
+    int         y_size
 
 EOwner:
     
