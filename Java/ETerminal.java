@@ -29,10 +29,8 @@ public class ETerminal {
 		}
 	}
     
-    
-    /*
     /// Returns the color as a string formatted to display colored in a Linux terminal.
-    public String to_terminal_colored_string(Boolean neutral) {
+    public void color_to_terminal_colored_string(Boolean neutral) {
         
         int n = this.value;
         
@@ -58,14 +56,14 @@ public class ETerminal {
             return extra_tags + "\033[36m" + display_character + "\033[m";
         }
         return "";
-    }*/
+    }
     
-    /*
+    
     /// Returns the color as a basic sting.
-    public String to_string() {
+    public void color_to_string() {
         return Integer.toString(this.value);
     }
-    */
+    
     
     /*
     /// Prints the board to stdout in coloured terminal format.

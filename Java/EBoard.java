@@ -137,7 +137,7 @@ class EBoard {
                 
         // bail if the move is illegal
         if(!can_play(player, next_color)) {
-            System.err.println("ERROR: Invalid move attempted.");
+            System.err.println("ERROR: Invalid move attempted by: " + player.name + ".");
             return;
         }
         

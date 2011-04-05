@@ -111,7 +111,7 @@ class EPlayer extends EOwner implements EPlayable {
         int color_choice = 0;
         if(this.ai_difficulty == 0) {
             color_choice = (int) Math.floor(Math.random() * board.num_colors);
-            while(color_choice == this.color) {
+            while(!board.can_play(this, color_choice)) {
                 color_choice = (int) Math.floor(Math.random() * board.num_colors);
             }
         }
