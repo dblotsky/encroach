@@ -26,6 +26,7 @@ import javax.swing.*;
  *	Reborn Through Hate Coroner - Coroner
  *	The Jester Race In Flames - The Jester Race
  *	Dark Chest of Wonders Nightwish - End of an Era (disc 1)
+ *  Ignorance - Paramore
  */
 
 public class Encroach extends JPanel{
@@ -213,6 +214,12 @@ public class Encroach extends JPanel{
 	}
 	
 	public static void main (String args[]) {
+        
+        // run only in terminal if passed the 'terminal' option
+        try{if(args[0].equals("terminal")){
+            new ETerminal(args).run(System.in); return; 
+        }}catch(Exception e){}
+        
 		JFrame main = new JFrame();
 		main.setVisible(false);
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

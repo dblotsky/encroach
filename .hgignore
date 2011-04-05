@@ -4,3 +4,5 @@ syntax:glob
 .DS_Store
 *.class
 *.jar
+*.orig
+

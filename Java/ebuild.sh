@@ -1,5 +1,5 @@
 #! /bin/bash
 
-javac EBasicRunner.java -d ./Jar
-cd Jar
+javac Encroach.java -d ./build
+cd build
 ./epackage.sh

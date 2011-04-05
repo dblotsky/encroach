@@ -74,37 +74,64 @@ class EBoard {
     public void reset() {
         
         // randomize the colors and reset all ownership to neutral
-        for(int i = 0; i < this.field.length; i++) {
-            for(int j = 0; j < this.field[i].length; j++) {
-                this.field[i][j].set_owner(neutral_owner);
-                this.field[i][j].randomize_color(this.num_colors);
+        for(int i = 0; i < field.length; i++) {
+            for(int j = 0; j < field[i].length; j++) {
+                field[i][j].set_owner(neutral_owner);
+                field[i][j].randomize_color(num_colors);
             }
         }
         
         // make sure that top left and bottom right squares are of different color
-        while(this.top_left.get_color() == this.bottom_right.get_color()) {
-            this.bottom_right.randomize_color(this.num_colors);
+        while(top_left.get_color() == bottom_right.get_color()) {
+            bottom_right.randomize_color(num_colors);
         }
         
         // reset all scores to defaults
-        this.player_1.reset_score();
-        this.player_2.reset_score();
-        this.neutral_owner.reset_score();
+        player_1.reset_score();
+        player_2.reset_score();
+        neutral_owner.reset_score();
         
         // give the players their starting squares and starting colors
-        this.player_1.set_color(this.player_1.starting_square.get_color());
-        this.player_2.set_color(this.player_2.starting_square.get_color());
-        conquer(this.player_1.starting_square, this.player_1);
-        conquer(this.player_2.starting_square, this.player_2);
+        player_1.set_color(player_1.starting_square.get_color());
+        player_2.set_color(player_2.starting_square.get_color());
+        conquer(player_1.starting_square, player_1);
+        conquer(player_2.starting_square, player_2);
         
-        // correct any starting ownership of extra squares
-        play_color(this.player_1, this.player_1.get_color());
-        play_color(this.player_2, this.player_2.get_color());
+        // balance starting positions
+        balance_start();
         
         return;
     }
     
-    /// Returns false if the given color is equal to the player's opponent's color.
+    /** Ensures that each player has only one starting square, and can make a legal move. **/
+    public void balance_start() {
+        
+        int p1_x = player_1.starting_square.x_coord;
+        int p1_y = player_1.starting_square.y_coord;
+        int p2_x = player_2.starting_square.x_coord;
+        int p2_y = player_2.starting_square.y_coord;
+        
+        ESquare p1_neighbor_1 = field[p1_x + 1][p1_y];
+        ESquare p1_neighbor_2 = field[p1_x][p1_y + 1];
+        ESquare p2_neighbor_1 = field[p2_x - 1][p2_y];
+        ESquare p2_neighbor_2 = field[p2_x][p2_y - 1];
+        
+        while(player_1.get_color() == p1_neighbor_1.get_color() || !can_play(player_1, p1_neighbor_1.get_color())) {
+            p1_neighbor_1.randomize_color(num_colors);
+        }
+        while(player_1.get_color() == p1_neighbor_2.get_color()) {
+            p1_neighbor_2.randomize_color(num_colors);
+        }
+        while(player_2.get_color() == p2_neighbor_1.get_color() || !can_play(player_2, p2_neighbor_1.get_color())) {
+            p2_neighbor_1.randomize_color(num_colors);
+        }
+        while(player_2.get_color() == p2_neighbor_2.get_color()) {
+            p2_neighbor_2.randomize_color(num_colors);
+        }
+        return;
+    }
+    
+    /// Returns false if the player cannot play the color.
     public Boolean can_play(EPlayer player, int color) {
         if(color == player.get_opponent().get_color() || (color < 0 || color >= this.num_colors) || color == player.get_color()) {
             return false;
@@ -180,7 +207,7 @@ class EBoard {
         return;
     }
     
-    /// Performs a recursive breadth-first search on the board, conquering squares for the player.
+    /// Performs a recursive depth-first search on the board, conquering squares for the player.
     private void traverse_owned(EPlayer player, int next_color, int x, int y) {
         
         // mark self as visited
@@ -225,8 +252,21 @@ class EBoard {
         return;
     }
     
-    /// Performs a recursive breadth-first search on the board, marking all squares that the player can reach.
+    /// Performs a recursive depth-first search on the board, marking all squares that the player can reach.
     private void traverse_reachable(EPlayer player, int x, int y) {
+        
+        /*
+		make a queue
+		push the first element on the queue
+		while the queue is not empty
+			record the current length of the queue
+			for the current length
+				pop element
+                mark element as visited
+				perform whatever we need on the element
+				push valid children onto the queue
+		when the queue is empty, that means that we traveresed everything we can reach
+		*/
         
         // mark self as visited
         this.field[x][y].visited = true;
@@ -296,4 +336,7 @@ class EBoard {
         }
         return this.player_2;
     }
+    
+    // TODO: make an iterator method
+    
 }

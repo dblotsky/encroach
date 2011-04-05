@@ -2,115 +2,217 @@ import java.util.*;
 import java.math.*;
 import java.io.*;
 
-/// The terminal version of Encroach.
+/** The terminal version of Encroach. **/
 public class ETerminal {
     
-    /// Makes an instance of itself, and runs it.
-    public static final void main(String[] args) {
-        new ETerminal().run(System.in, args);
-        return;
-    }
-	
-	/// Prints the current state of the game board.
-	public void print_board(EBoard board, Boolean colored_output) {
-		if(colored_output) {
-			board.print_terminal_colored();
-		} else {
-			board.print_simple();
-		}
-	}
-	
-	/// Prints a prompt for input.
-	public void print_prompt(EBoard board, Boolean colored_output) {
-		if(colored_output) {
-			System.out.print(board.prompt_terminal_colored());
-		} else {
-			System.out.print(board.prompt());
-		}
-	}
+    // running mode flags
+    private Boolean HELP_ONLY;
+    private Boolean COLOR;
     
-    /// Returns the color as a string formatted to display colored in a Linux terminal.
-    public void color_to_terminal_colored_string(Boolean neutral) {
+    // "constants"
+    // TODO: make them ACTUAL constants
+    private int NUM_COLORS;
+    private int X_SIZE;
+    private int Y_SIZE;
+    
+    // a game board and players
+    EBoard board;
+    EPlayer player_1;
+    EPlayer player_2;
+    
+    public ETerminal(String[] args) {
         
-        int n = this.value;
+        // defaults
+        this.HELP_ONLY = false;
+        this.COLOR = false;
+        this.NUM_COLORS  = 6;
+        this.X_SIZE = 20;
+        this.Y_SIZE = 20;
+        this.player_1 = new EPlayer("Player 1", 0);
+        this.player_2 = new EPlayer("Player 2", 0);
         
-        String extra_tags = "";
-        if(!neutral) {
-            extra_tags = "\033[1m";
+        // TODO: make a regex or something to accept customizations to the above attributes
+        
+        this.board = new EBoard(this.NUM_COLORS, this.X_SIZE, this.Y_SIZE);
+    }
+    
+    /** Returns true if the flag is contained in the array of acceptable help flags. **/
+    public Boolean is_help_flag(String flag) {
+        String[] help_flags = {"help", "-help", "-h", "--help", "-?", "/?", "h", "/h", "/help", "?"};
+        for(int i = 0; i < help_flags.length; i++) {
+            if(help_flags[i].equals(flag)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /** The main run loop of ETerminal. **/
+    public String run(InputStream input) {
+        
+        // display help and exit if HELP_ONLY was set
+        if(HELP_ONLY) {
+            print_text("help");
+            System.out.flush();
+            return( "OK" );
         }
         
-        String display_character = "#";
-        display_character = Integer.toString(n);
+        // set up an input scanner
+        Scanner in = new Scanner(input);
         
-        if(n == 0) {
-            return extra_tags + "\033[31m" + display_character + "\033[m";
-        } else if(n == 1) {
-            return extra_tags + "\033[32m" + display_character + "\033[m";
-        } else if(n == 2) {
-            return extra_tags + "\033[33m" + display_character + "\033[m";
-        } else if(n == 3) {
-            return extra_tags + "\033[34m" + display_character + "\033[m";
-        } else if(n == 4) {
-            return extra_tags + "\033[35m" + display_character + "\033[m";
-        } else if(n == 5) {
-            return extra_tags + "\033[36m" + display_character + "\033[m";
+        // initialize the board
+        board.initialize(player_1, player_2);
+        
+        // print a welcome message, the board, and a prompt for input
+        System.out.println("");
+        print_text("welcome");
+        print_text("options");
+        System.out.println("");
+        print_board();
+        System.out.println("");
+        print_prompt();
+        
+        // run the game
+        while(in.hasNextLine()) {
+            
+            // get player's input
+            String line_in = in.nextLine();
+            System.out.println("");
+            
+            // act on the input:
+            // make a move
+            if(line_in.matches("^[0-9]$")) {
+                int color = Integer.parseInt(line_in);
+                if(board.can_play(player_1, color)) {
+                    board.play_color(player_1, color);
+                    board.play_color(player_2, player_2.ai_next_color_choice(this.board));
+                    print_board();
+                } else {
+                    System.out.println("Illegal move.");
+                }
+                
+            // reset the board
+            } else if(line_in.equals("reset")) {
+                board.reset();
+                print_board();
+                
+            // print the score
+            } else if(line_in.equals("score")) {
+                print_score();
+            
+            // clarify
+            } else if(line_in.equals("single digit")) {
+                System.out.println("No - an *actual* digit.");
+            
+            // enable color
+            } else if(line_in.equals("color")) {
+                if(COLOR) {
+                    COLOR = false;
+                } else {
+                    COLOR = true;
+                }
+                print_board();
+            
+            // display helpful text
+            } else if(line_in.equals("rules") || line_in.equals("options") || line_in.equals("howto") || line_in.equals("help")) {
+                print_text(line_in);
+            
+            // display the board
+            } else if(line_in.equals("display") || line_in.equals("")) {
+                print_board();
+            
+            // quit the game
+            } else if(line_in.equals("q") || line_in.equals("quit") || line_in.equals("exit")) {
+                System.out.flush();
+                return( "OK" );
+            
+            // complain
+            } else {
+                System.out.println("Unrecognized input.");
+            }
+            
+            // prompt for input
+            System.out.println("");
+            print_prompt();
+            
+            if(board.winner_exists()) {
+                System.out.println("");
+                System.out.println("");
+                break;
+            }
         }
-        return "";
+        
+        print_board();
+        System.out.println("");
+        print_score();
+        System.out.println("");
+        
+        // exit gracefully
+        System.out.flush();
+        return( "OK" );
     }
     
-    
-    /// Returns the color as a basic sting.
-    public void color_to_string() {
-        return Integer.toString(this.value);
-    }
-    
-    
-    /*
-    /// Prints the board to stdout in coloured terminal format.
-    public void print_terminal_colored() {
-        for(int i = 0; i < this.field.length; i++) {
-            for(int j = 0; j < this.field[i].length; j++) {
-                System.out.printf(this.field[i][j].get_color().to_terminal_colored_string(!this.field[i][j].border) + " ");
+    public void print_board() {
+        ESquare[][] field = this.board.get_field();
+        for(int i = 0; i < field.length; i++) {
+            for(int j = 0; j < field[i].length; j++) {
+                System.out.printf(square_to_string(field[i][j]) + " ");
             }
             System.out.printf("\n");
         }
         return;
     }
     
-    /// Prints the board to stdout in simplest format.
-    public void print_simple() {
-        for(int i = 0; i < this.field.length; i++) {
-            for(int j = 0; j < this.field[i].length; j++) {
-                System.out.printf(this.field[i][j].get_color().to_string() + " ");
-            }
-            System.out.printf("\n");
+    public void print_prompt() {
+        String forbidden_color_1 = square_to_string(board.player_1.starting_square);
+        String forbidden_color_2 = square_to_string(board.player_2.starting_square);
+        System.out.print("Enter digit within 0 - " + (this.board.num_colors - 1) + " (but not " + forbidden_color_1 + " or " + forbidden_color_2 + "): ");
+    }
+    
+    public void print_score() {
+        System.out.println(board.player_1.get_name() + ": " + Integer.toString(board.player_1.get_score()) + ", " + board.player_2.get_name() + ": " + Integer.toString(board.player_2.get_score()) + ".");
+    }
+    
+    public String square_to_string(ESquare square) {
+        int color = square.get_color();
+        
+        // apply extra effects
+        String extra_effects = "";
+        if(square.border) {
+            extra_effects += "\033[1m";
         }
-        return;
+        
+        // String display_character = "#";
+        String display_character = Integer.toString(color);
+        
+        // return colorful output if COLOR is set to true
+        if(COLOR) {
+            if(color == 0) {
+                return extra_effects + "\033[31m" + display_character + "\033[m";
+            } else if(color == 1) {
+                return extra_effects + "\033[32m" + display_character + "\033[m";
+            } else if(color == 2) {
+                return extra_effects + "\033[33m" + display_character + "\033[m";
+            } else if(color == 3) {
+                return extra_effects + "\033[34m" + display_character + "\033[m";
+            } else if(color == 4) {
+                return extra_effects + "\033[35m" + display_character + "\033[m";
+            } else if(color == 5) {
+                return extra_effects + "\033[36m" + display_character + "\033[m";
+            }
+            return display_character;
+        }
+        
+        // return plain output
+        return display_character;
     }
-    */
-    
-    /*
-    /// Returns a colored prompt for input.
-    public String prompt_terminal_colored() {
-        return "Enter digit within \033[1m0\033[m - \033[1m" + (this.num_colors - 1) + "\033[m (but not " + this.player_2.get_color().to_terminal_colored_string(true) + "): ";
-    }
-    
-    /// Returns a prompt for input.
-    public String prompt() {
-        return "Enter digit within 0 - " + (this.num_colors - 1) + " (but not " + this.player_2.get_color().to_string() + "): ";
-    }
-    */
-    
-    /*
-    /// Returns the current score.
-    public String score() {
-        return this.player_1.name + ": " + this.player_1.score + ", " + this.player_2.name + ": " + this.player_2.score + ".";
-    }
-    */
     
     /// Prints various helful text.
-    public void print_text(String text) {
-        if(text.equals("options")) {
+    public void print_text(String choice) {
+        if(choice.equals("welcome")) {
+            System.out.println("--------------------------------------------");
+            System.out.println("            Welcome to Encroach!            ");
+        } else if(choice.equals("options")) {
             System.out.println("--------------------------------------------");
             System.out.println("");
             System.out.println("Available options:");
@@ -129,7 +231,7 @@ public class ETerminal {
             System.out.println("    howto         - explains how to play");
             System.out.println("");
             System.out.println("--------------------------------------------");
-        } else if(text.equals("help")) {
+        } else if(choice.equals("help")) {
             System.out.println("--------------------------------------------");
             System.out.println("                  Encroach                  ");
             System.out.println("");
@@ -158,7 +260,7 @@ public class ETerminal {
             System.out.println("       funky stuff.");
             System.out.println("");
             System.out.println("--------------------------------------------");
-        } else if(text.equals("rules")) {
+        } else if(choice.equals("rules")) {
             System.out.println("--------------------------------------------");
             System.out.println("");
             System.out.println("Rules:");
@@ -169,7 +271,7 @@ public class ETerminal {
             System.out.println("    - game ends when NO SQUARES are NEUTRAL");
             System.out.println("");
             System.out.println("--------------------------------------------");
-        } else if(text.equals("howto")) {
+        } else if(choice.equals("howto")) {
             System.out.println("--------------------------------------------");
             System.out.println("");
             System.out.println("How to play:");
@@ -188,189 +290,5 @@ public class ETerminal {
             System.out.println("--------------------------------------------");
         }
         return;
-    }
-    
-    /// The main run loop of EBasicRunner.
-    private String run(InputStream input, String[] args) {
-        
-        // display help if asked for help
-        try {
-            if(
-                args[0].equals("help") || 
-                args[0].equals("-help") || 
-                args[0].equals("-h") || 
-                args[0].equals("--help") || 
-                args[0].equals("-?") || 
-                args[0].equals("/?") || 
-                args[0].equals("h") || 
-                args[0].equals("/h") || 
-                args[0].equals("/help") || 
-                args[0].equals("?")
-            ) {
-                print_text("help");
-                System.out.flush();
-                return( "OK" );
-            }
-        } catch(Exception e) {}
-        
-        // set up an input scanner
-        Scanner in = new Scanner(input);
-        
-        Boolean COLOR = false;
-		try {
-			if(args[0].equals("color")) {
-				COLOR = true;
-			}
-		} catch(Exception e) {}
-        
-        // 'constants'
-        int NUM_COLORS  = 6;
-        int X_DIMENSION = 0;
-        int Y_DIMENSION = 0;
-        
-        try {
-            if(COLOR) {
-                X_DIMENSION = Integer.parseInt(args[1]);
-                Y_DIMENSION = Integer.parseInt(args[2]);
-            } else {
-                X_DIMENSION = Integer.parseInt(args[0]);
-                Y_DIMENSION = Integer.parseInt(args[1]);
-            }
-        } catch(Exception e) {
-            X_DIMENSION = 20;
-            Y_DIMENSION = 20;
-        }
-
-        // largest value for both X and Y is 50
-        if((X_DIMENSION < 5 || Y_DIMENSION < 5) || (X_DIMENSION > 50 || Y_DIMENSION > 50)) {
-            X_DIMENSION = 20;
-            Y_DIMENSION = 20;
-        }
-        
-        // make a human player and an AI player
-        EPlayer human    = new EPlayer("Human player", 0);
-        EPlayer computer = new EPlayer("AI player", 0);
-        
-        // set up and randomize a new board
-        EBoard board = new EBoard(NUM_COLORS, X_DIMENSION, Y_DIMENSION);
-        board.initialize(human, computer);
-        
-        // welcome the player to the game
-        System.out.println("");
-        System.out.println("--------------------------------------------");
-        System.out.println("            Welcome to Encroach!            ");
-        print_text("options");
-        System.out.println("");
-        
-        // print the board, and prompt for input
-        print_board(board, COLOR);
-        System.out.println("");
-        print_prompt(board, COLOR);
-        
-        // run the game
-        while(in.hasNextLine()) {
-            
-            // get player's input
-            String line_in = in.nextLine();
-            System.out.println("");
-            
-            // making a move
-            if(line_in.matches("^[0-9]$")) {
-                
-                int color_initializer = Integer.parseInt(line_in);
-                
-                // check if the number is out of bounds
-                if(color_initializer >= NUM_COLORS || color_initializer < 0) {
-                    System.out.println("Out of bounds: " + Integer.toString(color_initializer) + ".");
-                
-                // if it is not, proceed with making a move
-                } else {
-                    
-                    EColor human_next_color     = new EColor(color_initializer);
-                    EColor computer_next_color  = computer.ai_next_color_choice(board);
-                    
-                    while(human_next_color.equals(computer_next_color)) {
-                        computer_next_color  = computer.ai_next_color_choice(board);
-                    }
-                    
-                    // if it's a valid move, make it
-                    if(board.can_play(human, human_next_color)) {
-                        
-                        board.make_move(human, human_next_color);
-                        
-                        // then make the computer's move
-                        board.make_move(computer, computer_next_color);
-                        
-                        // print the board
-                        print_board(board, COLOR);
-                    
-                    // if not, complain
-                    } else {
-                        if(COLOR) {
-                            System.out.println("------------- Illegal move: " + human_next_color.to_terminal_colored_string(true) + ". -------------");
-                        } else {
-                            System.out.println("------------- Illegal move: " + human_next_color.to_string() + ". -------------");
-                        }
-                    }
-                }
-                
-            // resetting the game
-            } else if(line_in.equals("reset")) {
-                board.reset();
-                
-                // print the board, and prompt for input
-                print_board(board, COLOR);
-            
-            // printing the score
-            } else if(line_in.equals("score")) {
-                System.out.println(board.score());
-            
-            // clarifying
-            } else if(line_in.equals("single digit")) {
-                System.out.println("No - an *actual* digit.");
-            
-            // displaying the rules
-            } else if(
-                line_in.equals("rules") || 
-                line_in.equals("options") ||
-                line_in.equals("howto") ||
-                line_in.equals("help")
-            ) {
-                print_text(line_in);
-            
-            // displaying the board
-            } else if(line_in.equals("display") || line_in.equals("")) {
-                print_board(board, COLOR);
-            
-            // quitting the game
-            } else if(line_in.equals("q") || line_in.equals("quit") || line_in.equals("exit")) {
-                System.out.flush();
-                return( "OK" );
-            
-            // complaining
-            } else {
-                System.out.println("Unrecognized input.");
-            }
-            
-            // prompt for input
-            System.out.println("");
-            print_prompt(board, COLOR);
-            
-            if(board.has_winner()) {
-                System.out.println("");
-                System.out.println("");
-                break;
-            }
-        }
-        
-        print_board(board, COLOR);
-        System.out.println("");
-        System.out.println(board.winner());
-        System.out.println(board.score());
-        System.out.println("");
-        
-        // exit gracefully
-        System.out.flush();
-        return( "OK" );
     }
 }
