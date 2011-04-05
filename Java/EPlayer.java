@@ -2,48 +2,48 @@ import java.util.*;
 import java.math.*;
 import java.io.*;
 
-/// An entity that can own a square. Stores its name and the number of squares it owns.
+/** An entity that can own a square. Stores its name and the number of squares it owns. **/
 abstract class EOwner {
     
     String  name;
     int     default_score;
     int     score;
     
-    /// Increments the number of squares this owner owns.
+    /** Increments the number of squares this owner owns. **/
     public void increment_score() {
         this.score += 1;
         return;
     }
     
-    /// Decrements the number of squares this owner owns.
+    /** Decrements the number of squares this owner owns. **/
     public void decrement_score() {
         this.score -= 1;
         return;
     }
     
-    /// Resets the number of owned squares to the default.
+    /** Resets the number of owned squares to the default. **/
     public void reset_score() {
         this.score = default_score;
     }
     
-    /// Returns the number of squares this owner owns.
+    /** Returns the number of squares this owner owns. **/
     public int get_score() {
         return this.score;
     }
     
-    /// Sets the name of this owner.
+    /** Sets the name of this owner. **/
     public void set_name(String new_name) {
         this.name = new_name;
         return;
     }
     
-    /// Returns the name of this owner.
+    /** Returns the name of this owner. **/
     public String get_name() {
         return this.name;
     }
 }
 
-/// A set of functions that a playable entity must implement.
+/** A set of functions that a playable entity must implement. **/
 interface EPlayable {
     
     // attribute manipulation functions
@@ -66,7 +66,7 @@ interface EPlayable {
     public int      ai_next_color_choice(EBoard board);
 }
 
-/// A player.
+/** A player. **/
 class EPlayer extends EOwner implements EPlayable {
 
     EPlayer     opponent;
@@ -84,29 +84,29 @@ class EPlayer extends EOwner implements EPlayable {
         this.ai_difficulty      = ai_difficulty;
     }
     
-    /// Switches the player's color to the given color.
+    /** Switches the player's color to the given color. **/
     public void set_color(int new_color) {
         this.color = new_color;
         return;
     }
     
-    /// Returns the player's color.
+    /** Returns the player's color. **/
     public int get_color() {
         return this.color;
     }
     
-    /// Switches the player's opponent to the given opponent.
+    /** Switches the player's opponent to the given opponent. **/
     public void set_opponent(EPlayer new_opponent) {
         this.opponent = new_opponent;
         return;
     }
     
-    /// Returns the player's opponent.
+    /** Returns the player's opponent. **/
     public EPlayer get_opponent() {
         return this.opponent;
     }
     
-    /// Returns the AI's next choice of color.
+    /** Returns the AI's next choice of color, based on the difficulty setting. **/
     public int ai_next_color_choice(EBoard board) {
         int color_choice = 0;
         if(this.ai_difficulty == 0) {
@@ -119,7 +119,7 @@ class EPlayer extends EOwner implements EPlayable {
     }
 }
 
-/// A neutral owner.
+/** A neutral owner. **/
 class ENeutral extends EOwner {
     
     public ENeutral(String name, int squares_on_board) {

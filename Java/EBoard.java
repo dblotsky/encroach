@@ -2,7 +2,7 @@ import java.util.*;
 import java.math.*;
 import java.io.*;
 
-/// The game board.
+/** The game board. **/
 class EBoard {
     
     // board dimensions
@@ -23,7 +23,7 @@ class EBoard {
     // winning score
     int winning_score;
     
-    /// Constructs the board.
+    /** Constructs the board with given colors and dimensions. **/
     public EBoard(int num_colors, int x_size, int y_size) {
         
         // board dimensions
@@ -51,7 +51,7 @@ class EBoard {
         this.winning_score = (int) Math.ceil((x_size * y_size) / 2);
     }
     
-    /// Initializes the board.
+    /** Initializes the board with the given players. **/
     public void initialize(EPlayer player_1, EPlayer player_2) {
                 
         // initialize players
@@ -70,7 +70,7 @@ class EBoard {
         return;
     }
     
-    /// Brings the field to a state of randomness and resets player ownership to starting squares.
+    /** Brings the field to a state of randomness and resets player ownership to starting squares. **/
     public void reset() {
         
         // randomize the colors and reset all ownership to neutral
@@ -96,6 +96,8 @@ class EBoard {
         player_2.set_color(player_2.starting_square.get_color());
         conquer(player_1.starting_square, player_1);
         conquer(player_2.starting_square, player_2);
+        player_1.starting_square.border = true;
+        player_2.starting_square.border = true;
         
         // balance starting positions
         balance_start();
@@ -131,7 +133,7 @@ class EBoard {
         return;
     }
     
-    /// Returns false if the player cannot play the color.
+    /** Returns false if the player cannot play the color - if it's the same color, the opponent's color, or out of bounds. **/
     public Boolean can_play(EPlayer player, int color) {
         if(color == player.get_opponent().get_color() || (color < 0 || color >= this.num_colors) || color == player.get_color()) {
             return false;
@@ -139,7 +141,7 @@ class EBoard {
         return true;
     }
     
-    /// Resets 'visited' flags on all squares.
+    /** Resets 'visited' flags on all squares. **/
     public void reset_visited() {
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
@@ -148,7 +150,7 @@ class EBoard {
         }
     }
     
-    /// Resets 'border' flags on squares bordering the given player's territory.
+    /** Resets 'border' flags on squares bordering the given player's territory. **/
     public void reset_border(EPlayer player) {
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
@@ -159,7 +161,7 @@ class EBoard {
         }
     }
     
-    /// Makes a move to the next color for the player.
+    /** Makes a move to the next color for the player. **/
     public void play_color(EPlayer player, int next_color) {
                 
         // bail if the move is illegal
@@ -198,7 +200,7 @@ class EBoard {
         return;
     }
     
-    /// Adjusts ownership of the given square to the given player and adjusts scores.
+    /** Adjusts ownership of the given square to the given player and adjusts scores. **/
     public void conquer(ESquare square, EPlayer conqueror) {
         square.get_owner().decrement_score();
         square.set_owner(conqueror);
@@ -207,7 +209,7 @@ class EBoard {
         return;
     }
     
-    /// Performs a recursive depth-first search on the board, conquering squares for the player.
+    /** Performs a recursive depth-first search on the board, conquering squares for the player. **/
     private void traverse_owned(EPlayer player, int next_color, int x, int y) {
         
         // mark self as visited
@@ -252,7 +254,7 @@ class EBoard {
         return;
     }
     
-    /// Performs a recursive depth-first search on the board, marking all squares that the player can reach.
+    /** Performs a recursive depth-first search on the board, marking all squares that the player can reach. **/
     private void traverse_reachable(EPlayer player, int x, int y) {
         
         /*
@@ -314,18 +316,18 @@ class EBoard {
         }
     }
     
-    /// Returns true if either player's score is equal to or greater than the winning score.
+    /** Returns true if either player's score is equal to or greater than the winning score. **/
     public Boolean winner_exists() {
         return this.neutral_owner.score == 0;
         // return ((this.player_1.score >= this.winning_score) || (this.player_2.score >= this.winning_score));
     }
     
-    /// Returns the game field.
+    /** Returns the game field. **/
     public ESquare[][] get_field() {
         return this.field;
     }
     
-    /// Returns the winner of the game.
+    /** Returns the winner of the game. **/
     public EPlayer winner() {
         if(!winner_exists()) {
             System.err.println("ERROR: There is no winner yet.");
@@ -337,6 +339,6 @@ class EBoard {
         return this.player_2;
     }
     
-    // TODO: make an iterator method
+    // TODO: make an iterator method for the board
     
 }

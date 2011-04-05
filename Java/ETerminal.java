@@ -16,10 +16,11 @@ public class ETerminal {
     private int Y_SIZE;
     
     // a game board and players
-    EBoard board;
     EPlayer player_1;
     EPlayer player_2;
+    EBoard board;
     
+    /** Makes the ETerminal instance, taking in command line arguments. **/
     public ETerminal(String[] args) {
         
         // defaults
@@ -144,6 +145,7 @@ public class ETerminal {
         
         print_board();
         System.out.println("");
+        System.out.println(board.winner().get_name() + " wins.");
         print_score();
         System.out.println("");
         
@@ -152,6 +154,7 @@ public class ETerminal {
         return( "OK" );
     }
     
+    /** Prints the board. **/
     public void print_board() {
         ESquare[][] field = this.board.get_field();
         for(int i = 0; i < field.length; i++) {
@@ -163,51 +166,68 @@ public class ETerminal {
         return;
     }
     
+    /** Prints a prompt. **/
     public void print_prompt() {
-        String forbidden_color_1 = square_to_string(board.player_1.starting_square);
-        String forbidden_color_2 = square_to_string(board.player_2.starting_square);
+        String forbidden_color_1 = square_to_string(board.player_1.starting_square, true);
+        String forbidden_color_2 = square_to_string(board.player_2.starting_square, true);
         System.out.print("Enter digit within 0 - " + (this.board.num_colors - 1) + " (but not " + forbidden_color_1 + " or " + forbidden_color_2 + "): ");
     }
     
+    /** Displays the current score. **/
     public void print_score() {
         System.out.println(board.player_1.get_name() + ": " + Integer.toString(board.player_1.get_score()) + ", " + board.player_2.get_name() + ": " + Integer.toString(board.player_2.get_score()) + ".");
     }
     
+    /** Calls square_to_string() with force_plain set to false. **/
     public String square_to_string(ESquare square) {
+        return square_to_string(square, false);
+    }
+    
+    /** Converts the square to a String to be printed. Uses ANSI text effects if COLOR is set to true. **/
+    public String square_to_string(ESquare square, Boolean force_plain) { 
+        
+        // get the color
         int color = square.get_color();
         
-        // apply extra effects
+        // return plain output if COLOR is set to false
+        if(!COLOR || force_plain) { return Integer.toString(color); }
+        
+        String display_character = "";
         String extra_effects = "";
+        
+        // apply extra effects
         if(square.border) {
             extra_effects += "\033[1m";
+            display_character = "#";
         }
-        
-        // String display_character = "#";
-        String display_character = Integer.toString(color);
+        if(square.get_owner() == board.neutral_owner) {
+            // extra_effects += "\033[2m";
+            display_character = Integer.toString(color);
+        }
+        if(square.get_owner() != board.neutral_owner && !square.border) {
+            extra_effects += "\033[47m";
+            extra_effects += "\033[7m";
+            display_character = " ";
+        }
         
         // return colorful output if COLOR is set to true
-        if(COLOR) {
-            if(color == 0) {
-                return extra_effects + "\033[31m" + display_character + "\033[m";
-            } else if(color == 1) {
-                return extra_effects + "\033[32m" + display_character + "\033[m";
-            } else if(color == 2) {
-                return extra_effects + "\033[33m" + display_character + "\033[m";
-            } else if(color == 3) {
-                return extra_effects + "\033[34m" + display_character + "\033[m";
-            } else if(color == 4) {
-                return extra_effects + "\033[35m" + display_character + "\033[m";
-            } else if(color == 5) {
-                return extra_effects + "\033[36m" + display_character + "\033[m";
-            }
-            return display_character;
+        if(color == 0) {
+            return extra_effects + "\033[31m" + display_character + "\033[m";
+        } else if(color == 1) {
+            return extra_effects + "\033[32m" + display_character + "\033[m";
+        } else if(color == 2) {
+            return extra_effects + "\033[33m" + display_character + "\033[m";
+        } else if(color == 3) {
+            return extra_effects + "\033[34m" + display_character + "\033[m";
+        } else if(color == 4) {
+            return extra_effects + "\033[35m" + display_character + "\033[m";
+        } else if(color == 5) {
+            return extra_effects + "\033[36m" + display_character + "\033[m";
         }
-        
-        // return plain output
         return display_character;
     }
     
-    /// Prints various helful text.
+    /** Prints various helful text. **/
     public void print_text(String choice) {
         if(choice.equals("welcome")) {
             System.out.println("--------------------------------------------");
@@ -224,16 +244,23 @@ public class ETerminal {
             System.out.println("    score         - shows the score");
             System.out.println("    display       - displays the board");
             System.out.println("    [ENTER]       - also displays the board");
+            System.out.println("    color         - toggles ANSI effects");
             System.out.println("");
             System.out.println("    rules         - prints the rules");
             System.out.println("    options       - re-prints these options");
             System.out.println("    help          - shows the help text");
             System.out.println("    howto         - explains how to play");
             System.out.println("");
+            System.out.println(" NOTE: To run in color, you MUST be using a");
+            System.out.println("       terminal that supports ANSI escape");
+            System.out.println("       codes for colored text. If they're");
+            System.out.println("       not supported, you will see some");
+            System.out.println("       funky stuff.");
+            System.out.println("");
             System.out.println("--------------------------------------------");
         } else if(choice.equals("help")) {
             System.out.println("--------------------------------------------");
-            System.out.println("                  Encroach                  ");
+            System.out.println("              Encroach on Java              ");
             System.out.println("");
             System.out.println("              March 15th, 2011              ");
             System.out.println("");
@@ -242,22 +269,19 @@ public class ETerminal {
             System.out.println("");
             System.out.println("Running the game:");
             System.out.println("");
-            System.out.println(" Run the game as you already did, and pass");
-            System.out.println(" it one of the option combinations below:");
+            System.out.println(" The game works in a GUI or a terminal UI.");
+            System.out.println(" To run in GUI, simply double-click it, or");
+            System.out.println(" run from command line. To run in terminal,");
+            System.out.println(" run from command line, and pass it the");
+            System.out.println(" 'terminal' flag.");
+            /*System.out.println("");
+            System.out.println(" Available terminal options are (after the");
+            System.out.println(" 'terminal' flag):");
             System.out.println("");
-            System.out.println("    color");
-            System.out.println("    color [x_value] [y_value]");
-            System.out.println("    [x_valye] [y_value]");
-            System.out.println("");
-            System.out.println(" Replace the [y_value] and [x_value] with a");
-            System.out.println(" number between 5 and 50 (inclusive).");
-            System.out.println("");
-            System.out.println("");
-            System.out.println(" NOTE: To run in color, you MUST be using a");
-            System.out.println("       terminal that supports ANSI escape");
-            System.out.println("       codes for colored text. If they're");
-            System.out.println("       not supported, you will see some");
-            System.out.println("       funky stuff.");
+            System.out.println("    --color");
+            System.out.println("    --num_colors");
+            System.out.println("    --x_size");
+            System.out.println("    --y_size");*/
             System.out.println("");
             System.out.println("--------------------------------------------");
         } else if(choice.equals("rules")) {
@@ -268,6 +292,7 @@ public class ETerminal {
             System.out.println("    - YOU start in TOP LEFT corner");
             System.out.println("    - OPPONENT starts in BOTTOM RIGHT corner");
             System.out.println("    - you CAN'T choose the opponent's color");
+            System.out.println("    - you CAN'T choose your own color");
             System.out.println("    - game ends when NO SQUARES are NEUTRAL");
             System.out.println("");
             System.out.println("--------------------------------------------");
