@@ -27,8 +27,8 @@ public class ETerminal {
         this.HELP_ONLY = false;
         this.COLOR = false;
         this.NUM_COLORS  = 6;
-        this.X_SIZE = 20;
-        this.Y_SIZE = 20;
+        this.X_SIZE = 5;
+        this.Y_SIZE = 5;
         this.player_1 = new EPlayer("Player 1", 0);
         this.player_2 = new EPlayer("Player 2", 0);
         
@@ -101,6 +101,10 @@ public class ETerminal {
             } else if(line_in.equals("score")) {
                 print_score();
             
+            // print the score
+            } else if(line_in.equals("winloss")) {
+                print_winloss();
+            
             // clarify
             } else if(line_in.equals("single digit")) {
                 System.out.println("No - an *actual* digit.");
@@ -132,22 +136,25 @@ public class ETerminal {
                 System.out.println("Unrecognized input.");
             }
             
+            // check for game's end
+            if(board.winner_exists()) {
+                
+                // print score and winner
+                System.out.println("");
+                System.out.println(board.winner().get_name() + " wins.");
+                print_score();
+                
+                // reset the board for a new game
+                board.end_game_and_reset();
+                print_winloss();
+                System.out.println("");
+                print_board();
+            }
+            
             // prompt for input
             System.out.println("");
             print_prompt();
-            
-            if(board.winner_exists()) {
-                System.out.println("");
-                System.out.println("");
-                break;
-            }
         }
-        
-        print_board();
-        System.out.println("");
-        System.out.println(board.winner().get_name() + " wins.");
-        print_score();
-        System.out.println("");
         
         // exit gracefully
         System.out.flush();
@@ -164,6 +171,12 @@ public class ETerminal {
             System.out.printf("\n");
         }
         return;
+    }
+    
+    /** Prints the number of wins and losses for both players. **/
+    public void print_winloss() {
+        System.out.println(player_1.get_name() + " - Won: " + player_1.num_wins() + ", Lost: " + player_1.num_losses() + ".");
+        System.out.println(player_2.get_name() + " - Won: " + player_2.num_wins() + ", Lost: " + player_2.num_losses() + ".");
     }
     
     /** Prints a prompt. **/
@@ -242,6 +255,7 @@ public class ETerminal {
             System.out.println("");
             System.out.println("    single digit  - makes a move");
             System.out.println("    score         - shows the score");
+            System.out.println("    winloss       - shows wins/losses");
             System.out.println("    display       - displays the board");
             System.out.println("    [ENTER]       - also displays the board");
             System.out.println("    color         - toggles ANSI effects");

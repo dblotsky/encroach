@@ -8,8 +8,8 @@ EPlayer:
     String      get_name()
     int         get_color()
     int         ai_next_color_choice(EBoard board)
-    int         x_size
-    int         y_size
+    int         num_wins();
+    int         num_losses();
 
 EOwner:
     
@@ -27,6 +27,9 @@ EBoard:
     Boolean     winner_exists()
     EPlayer     winner()
     ESquare[][] get_field()
+    int         x_size
+    int         y_size
+    void        end_game_and_reset()
 
 ESquare:
     

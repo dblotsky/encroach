@@ -53,6 +53,10 @@ interface EPlayable {
     public int      get_score();
     public void     set_name(String new_name);
     public String   get_name();
+    public void     record_win();
+    public void     record_loss();
+    public int      num_wins();
+    public int      num_losses();
     
     // color manipulation functions
     public void     set_color(int new_color);
@@ -73,6 +77,8 @@ class EPlayer extends EOwner implements EPlayable {
     ESquare     starting_square;
     int         color;
     int         ai_difficulty;
+    int         games_won;
+    int         games_lost;
     
     public EPlayer(String name, int ai_difficulty) {
         this.name               = name;
@@ -82,6 +88,30 @@ class EPlayer extends EOwner implements EPlayable {
         this.opponent           = null;
         this.starting_square    = null;
         this.ai_difficulty      = ai_difficulty;
+        this.games_won          = 0;
+        this.games_lost         = 0;
+    }
+    
+    /** Records that the player won a game. **/
+    public void record_win() {
+        this.games_won += 1;
+        return;
+    }
+    
+    /** Records that the player lost a game. **/
+    public void record_loss() {
+        this.games_lost += 1;
+        return;
+    }
+    
+    /** Returns the number of wins. **/
+    public int num_wins() {
+        return this.games_won;
+    }
+    
+    /** Returns the number of losses. **/
+    public int num_losses() {
+        return this.games_lost;
     }
     
     /** Switches the player's color to the given color. **/

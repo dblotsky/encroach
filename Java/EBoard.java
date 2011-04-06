@@ -77,6 +77,7 @@ class EBoard {
         for(int i = 0; i < field.length; i++) {
             for(int j = 0; j < field[i].length; j++) {
                 field[i][j].set_owner(neutral_owner);
+                field[i][j].border = false;
                 field[i][j].randomize_color(num_colors);
             }
         }
@@ -254,9 +255,7 @@ class EBoard {
         return;
     }
     
-    /** Performs a recursive depth-first search on the board, marking all squares that the player can reach. **/
-    private void traverse_reachable(EPlayer player, int x, int y) {
-        
+    // private void breadth-first-search() {
         /*
 		make a queue
 		push the first element on the queue
@@ -269,6 +268,10 @@ class EBoard {
 				push valid children onto the queue
 		when the queue is empty, that means that we traveresed everything we can reach
 		*/
+    // }
+    
+    /** Performs a recursive depth-first search on the board, marking all squares that the player can reach. **/
+    private void traverse_reachable(EPlayer player, int x, int y) {
         
         // mark self as visited
         this.field[x][y].visited = true;
@@ -329,16 +332,50 @@ class EBoard {
     
     /** Returns the winner of the game. **/
     public EPlayer winner() {
+        
+        // if there is no winner yet, return nothing and complain
         if(!winner_exists()) {
             System.err.println("ERROR: There is no winner yet.");
             return null;
         }
-        if(this.player_1.score >= this.player_2.score) {
-            return this.player_1;
+        
+        // return the player with the highest score
+        if(player_1.get_score() > player_2.get_score()) {
+            return player_1;
+        } else if(player_1.get_score() < player_2.get_score()) {
+            return player_2;
         }
-        return this.player_2;
+        
+        // if a tie is discovered, Chuck Norris wins
+        return new EPlayer("Chuck Norris", 0);
     }
     
-    // TODO: make an iterator method for the board
+    /** Marks the end of the game and resets the board for a new game. **/
+    public void end_game_and_reset() {
+        end_game();
+        reset();
+    }
+    
+    /** Ends the game and updates win/loss count. **/
+    public void end_game() {
+        
+        // refuse to end until there is a winner
+        if(!winner_exists()) {
+            System.err.println("ERROR: Game is not yet over.");
+            return;
+        }
+    
+        // record win and loss
+        if(winner() == player_1) {
+            player_1.record_win();
+            player_2.record_loss();
+        } else if(winner() == player_2) {
+            player_1.record_loss();
+            player_2.record_win();
+        }
+        return;
+    }
+    
+    // TODO: make an iterator method for the board?
     
 }
