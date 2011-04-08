@@ -202,7 +202,7 @@ public class ETerminal {
         // get the color
         int color = square.get_color();
         
-        // return plain output if COLOR is set to false
+        // return plain output if COLOR is set to false, or if plain output is forced
         if(!COLOR || force_plain) { return Integer.toString(color); }
         
         String display_character = "";
