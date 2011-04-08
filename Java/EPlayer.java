@@ -5,9 +5,9 @@ import java.io.*;
 /** An entity that can own a square. Stores its name and the number of squares it owns. **/
 abstract class EOwner {
     
-    String  name;
-    int     default_score;
-    int     score;
+    protected String    name;
+    protected int       default_score;
+    protected int       score;
     
     /** Increments the number of squares this owner owns. **/
     public void increment_score() {
@@ -43,10 +43,10 @@ abstract class EOwner {
     }
 }
 
-/** A set of functions that a playable entity must implement. **/
+/** A set of methods that a playable entity must implement. **/
 interface EPlayable {
     
-    // attribute manipulation functions
+    // attribute methods
     public void     increment_score();
     public void     decrement_score();
     public void     reset_score();
@@ -57,28 +57,26 @@ interface EPlayable {
     public void     record_loss();
     public int      num_wins();
     public int      num_losses();
-    
-    // color manipulation functions
+    public ESquare  get_starting_square();
+    public void     set_starting_square(ESquare new_square);
     public void     set_color(int new_color);
     public int      get_color();
-    
-    // opponent manipulation functions
     public void     set_opponent(EPlayer new_opponent);
     public EPlayer  get_opponent();
     
-    // AI functions
+    // AI methods
     public int      ai_next_color_choice(EBoard board);
 }
 
 /** A player. **/
 class EPlayer extends EOwner implements EPlayable {
 
-    EPlayer     opponent;
-    ESquare     starting_square;
-    int         color;
-    int         ai_difficulty;
-    int         games_won;
-    int         games_lost;
+    private EPlayer     opponent;
+    private ESquare     starting_square;
+    private int         color;
+    private int         ai_difficulty;
+    private int         games_won;
+    private int         games_lost;
     
     public EPlayer(String name, int ai_difficulty) {
         this.name               = name;
@@ -134,6 +132,17 @@ class EPlayer extends EOwner implements EPlayable {
     /** Returns the player's opponent. **/
     public EPlayer get_opponent() {
         return this.opponent;
+    }
+    
+    /** Returns this player's starting square. **/
+    public ESquare get_starting_square() {
+        return this.starting_square;
+    }
+    
+    /** Switches this player's starting square to the given one. **/
+    public void set_starting_square(ESquare new_square) {
+        this.starting_square = new_square;
+        return;
     }
     
     /** Returns the AI's next choice of color, based on the difficulty setting. **/

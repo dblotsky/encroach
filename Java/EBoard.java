@@ -6,22 +6,22 @@ import java.io.*;
 class EBoard {
     
     // board dimensions
-    int x_size;
-    int y_size;
-    int num_colors;
+    public int x_size;
+    public int y_size;
+    public int num_colors;
     
     // players
-    EPlayer     player_1;
-    EPlayer     player_2;
-    EOwner      neutral_owner;
+    public EPlayer      player_1;
+    public EPlayer      player_2;
+    private EOwner      neutral_owner;
     
     // field
-    ESquare[][] field;
-    ESquare     top_left;
-    ESquare     bottom_right;
+    private ESquare[][] field;
+    private ESquare     top_left;
+    private ESquare     bottom_right;
     
     // winning score
-    int winning_score;
+    private int winning_score;
     
     /** Constructs the board with given colors and dimensions. **/
     public EBoard(int num_colors, int x_size, int y_size) {
@@ -63,8 +63,8 @@ class EBoard {
         this.player_2.set_opponent(this.player_1);
         
         // set each player's starting squares
-        this.player_1.starting_square = this.top_left;
-        this.player_2.starting_square = this.bottom_right;
+        this.player_1.set_starting_square(this.top_left);
+        this.player_2.set_starting_square(this.bottom_right);
         
         reset();
         return;
@@ -93,12 +93,12 @@ class EBoard {
         neutral_owner.reset_score();
         
         // give the players their starting squares and starting colors
-        player_1.set_color(player_1.starting_square.get_color());
-        player_2.set_color(player_2.starting_square.get_color());
-        conquer(player_1.starting_square, player_1);
-        conquer(player_2.starting_square, player_2);
-        player_1.starting_square.border = true;
-        player_2.starting_square.border = true;
+        player_1.set_color(player_1.get_starting_square().get_color());
+        player_2.set_color(player_2.get_starting_square().get_color());
+        conquer(player_1.get_starting_square(), player_1);
+        conquer(player_2.get_starting_square(), player_2);
+        player_1.get_starting_square().border = true;
+        player_2.get_starting_square().border = true;
         
         // balance starting positions
         balance_start();
@@ -109,10 +109,10 @@ class EBoard {
     /** Ensures that each player has only one starting square, and can make a legal move. **/
     public void balance_start() {
         
-        int p1_x = player_1.starting_square.x_coord;
-        int p1_y = player_1.starting_square.y_coord;
-        int p2_x = player_2.starting_square.x_coord;
-        int p2_y = player_2.starting_square.y_coord;
+        int p1_x = player_1.get_starting_square().x();
+        int p1_y = player_1.get_starting_square().y();
+        int p2_x = player_2.get_starting_square().x();
+        int p2_y = player_2.get_starting_square().y();
         
         ESquare p1_neighbor_1 = field[p1_x + 1][p1_y];
         ESquare p1_neighbor_2 = field[p1_x][p1_y + 1];
@@ -146,7 +146,7 @@ class EBoard {
     public void reset_visited() {
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
-                this.field[i][j].visited = false;
+                this.field[i][j].clear_visited();
             }
         }
     }
@@ -181,16 +181,16 @@ class EBoard {
         reset_border(player);
         
         // conquer newly connected squares
-        traverse_owned(player, next_color, player.starting_square.x_coord, player.starting_square.y_coord);
+        traverse_owned(player, next_color, player.get_starting_square().x(), player.get_starting_square().y());
         reset_visited();
         
         // determine all squares that the opponent cannot reach
-        traverse_reachable(opponent, opponent.starting_square.x_coord, opponent.starting_square.y_coord);
+        traverse_reachable(opponent, opponent.get_starting_square().x(), opponent.get_starting_square().y());
         
         // now conquer all squares that the opponent cannot reach
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
-                if(!this.field[i][j].visited) {
+                if(!this.field[i][j].is_visited()) {
                     conquer(this.field[i][j], player);
                     // also clear borders
                 }
@@ -214,12 +214,12 @@ class EBoard {
     private void traverse_owned(EPlayer player, int next_color, int x, int y) {
         
         // mark self as visited
-        this.field[x][y].visited = true;
+        this.field[x][y].set_visited();
         
         // recurse through all neighbors, if they exist and fit traversal conditions
         if(x != 0) {
             ESquare top_square = this.field[x - 1][y];
-            if(!top_square.visited) {
+            if(!top_square.is_visited()) {
                 if(top_square.conquered_by_move(next_color, player)) {
                     traverse_owned(player, next_color, (x - 1), y);
                 }
@@ -227,7 +227,7 @@ class EBoard {
         }
         if(y != 0) {
             ESquare left_square = this.field[x][y - 1];
-            if(!left_square.visited) {
+            if(!left_square.is_visited()) {
                 if(left_square.conquered_by_move(next_color, player)) {
                     traverse_owned(player, next_color, x, (y - 1));
                 }
@@ -235,7 +235,7 @@ class EBoard {
         }
         if(x != (x_size - 1)) {
             ESquare bottom_square = this.field[x + 1][y];
-            if(!bottom_square.visited) {
+            if(!bottom_square.is_visited()) {
                 if(bottom_square.conquered_by_move(next_color, player)) {
                     traverse_owned(player, next_color, (x + 1), y);
                 }
@@ -243,7 +243,7 @@ class EBoard {
         }
         if(y != (y_size - 1)) {
             ESquare right_square = this.field[x][y + 1];
-            if(!right_square.visited) {
+            if(!right_square.is_visited()) {
                 if(right_square.conquered_by_move(next_color, player)) {
                     traverse_owned(player, next_color, x, (y + 1));
                 }
@@ -274,12 +274,12 @@ class EBoard {
     private void traverse_reachable(EPlayer player, int x, int y) {
         
         // mark self as visited
-        this.field[x][y].visited = true;
+        this.field[x][y].set_visited();
         
         // recurse through all neighbors, if they exist
         if(x != 0) {
             ESquare top_square = this.field[x - 1][y];
-            if(!top_square.visited) {
+            if(!top_square.is_visited()) {
                 if(top_square.conquerable_by_player(player)) {
                     traverse_reachable(player, (x - 1), y);
                 } else {
@@ -289,7 +289,7 @@ class EBoard {
         }
         if(y != 0) {
             ESquare left_square = this.field[x][y - 1];
-            if(!left_square.visited) {
+            if(!left_square.is_visited()) {
                 if(left_square.conquerable_by_player(player)) {
                     traverse_reachable(player, x, (y - 1));
                 } else {
@@ -299,7 +299,7 @@ class EBoard {
         }
         if(x != (x_size - 1)) {
             ESquare bottom_square = this.field[x + 1][y];
-            if(!bottom_square.visited) {
+            if(!bottom_square.is_visited()) {
                 if(bottom_square.conquerable_by_player(player)) {
                     traverse_reachable(player, (x + 1), y);
                 } else {
@@ -309,7 +309,7 @@ class EBoard {
         }
         if(y != (y_size - 1)) {
             ESquare right_square = this.field[x][y + 1];
-            if(!right_square.visited) {
+            if(!right_square.is_visited()) {
                 if(right_square.conquerable_by_player(player)) {
                     traverse_reachable(player, x, (y + 1));
                 } else {

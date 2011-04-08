@@ -2,23 +2,28 @@
 
 EPlayer:
     
+    // methods
     EPlayer     EPlayer(String name, int ai_difficulty)
     int         get_score()
     void        set_name(String new_name)
     String      get_name()
     int         get_color()
     int         ai_next_color_choice(EBoard board)
-    int         num_wins();
-    int         num_losses();
+    int         num_wins()
+    int         num_losses()
+    int         get_score()
+    ESquare     get_starting_square()
 
 EOwner:
     
+    // methods
     int         get_score()
     void        set_name(String new_name)
     String      get_name()
 
 EBoard:
     
+    // methods
     EBoard      EBoard(int num_colors, int x_size, int y_size)
     void        initialize(EPlayer player_1, EPlayer player_2)
     void        reset()
@@ -27,14 +32,25 @@ EBoard:
     Boolean     winner_exists()
     EPlayer     winner()
     ESquare[][] get_field()
+    void        end_game_and_reset()
+    
+    // member variables
+    EPlayer     player_1
+    EPlayer     player_2
     int         x_size
     int         y_size
-    void        end_game_and_reset()
+    int         num_colors
 
 ESquare:
     
+    // methods
     int         get_color()
     EOwner      get_owner()
-    int         x_coord
-    int         y_coord
+    int         x()
+    int         y()
+    Boolean     conquerable_by_player(EPlayer player)
+    Boolean     conquered_by_move(int next_color, EPlayer conqueror)
+    
+    // member variables
+    Boolean     border
 

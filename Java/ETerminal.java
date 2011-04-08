@@ -16,9 +16,9 @@ public class ETerminal {
     private int Y_SIZE;
     
     // a game board and players
-    EPlayer player_1;
-    EPlayer player_2;
-    EBoard board;
+    private EPlayer player_1;
+    private EPlayer player_2;
+    private EBoard board;
     
     /** Makes the ETerminal instance, taking in command line arguments. **/
     public ETerminal(String[] args) {
@@ -181,8 +181,8 @@ public class ETerminal {
     
     /** Prints a prompt. **/
     public void print_prompt() {
-        String forbidden_color_1 = square_to_string(board.player_1.starting_square, true);
-        String forbidden_color_2 = square_to_string(board.player_2.starting_square, true);
+        String forbidden_color_1 = square_to_string(board.player_1.get_starting_square(), true);
+        String forbidden_color_2 = square_to_string(board.player_2.get_starting_square(), true);
         System.out.print("Enter digit within 0 - " + (this.board.num_colors - 1) + " (but not " + forbidden_color_1 + " or " + forbidden_color_2 + "): ");
     }
     
@@ -213,11 +213,11 @@ public class ETerminal {
             extra_effects += "\033[1m";
             display_character = "#";
         }
-        if(square.get_owner() == board.neutral_owner) {
+        if(square.get_owner() != board.player_1 && square.get_owner() != board.player_2) {
             // extra_effects += "\033[2m";
             display_character = Integer.toString(color);
         }
-        if(square.get_owner() != board.neutral_owner && !square.border) {
+        if((square.get_owner() == board.player_1 || square.get_owner() == board.player_2) && !square.border) {
             extra_effects += "\033[47m";
             extra_effects += "\033[7m";
             display_character = " ";

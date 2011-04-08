@@ -6,16 +6,16 @@ import java.io.*;
 class ESquare {
     
     // owner and color
-    EOwner  owner;
-    int     color;
+    private EOwner  owner;
+    private int     color;
     
     // state flags
-    Boolean visited;
-    Boolean border;
+    private Boolean visited;
+    public Boolean  border;
     
     // coordinates: may be deprecated if irregular boards are supported
-    int     x_coord;
-    int     y_coord;
+    private int     x_coord;
+    private int     y_coord;
     
     /** Creates a new unowned square with color 0. **/
     public ESquare(int x_coord, int y_coord) {
@@ -33,6 +33,21 @@ class ESquare {
         return;
     }
     
+    /** Returns true if this square's 'visited' flag is true. False otherwise. **/
+    public Boolean is_visited() {
+        return this.visited;
+    }
+    
+    /** Returns the square's x-coordinate. **/
+    public int x() {
+        return this.x_coord;
+    }
+    
+    /** Returns the square's y-coordinate. **/
+    public int y() {
+        return this.y_coord;
+    }
+    
     /** Returns the square's owner. **/
     public EOwner get_owner() {
         return this.owner;
@@ -41,6 +56,18 @@ class ESquare {
     /** Switches the square's color to the given color. **/
     public void set_color(int new_color) {
         this.color = new_color;
+        return;
+    }
+    
+    /** Sets the 'visited' flag to true. **/
+    public void set_visited() {
+        this.visited = true;
+        return;
+    }
+    
+    /** Sets the 'visited' flag to false. **/
+    public void clear_visited() {
+        this.visited = false;
         return;
     }
     
