@@ -27,12 +27,16 @@ EBoard:
     EBoard      EBoard(int num_colors, int x_size, int y_size)
     void        initialize(EPlayer player_1, EPlayer player_2)
     void        reset()
+    ESquare[][] get_field()
     Boolean     can_play(EPlayer player, int color)
     void        play_color(EPlayer player, int next_color)
     Boolean     winner_exists()
     EPlayer     winner()
-    ESquare[][] get_field()
     void        end_game_and_reset()
+    int         mark_owned(EPlayer player, Boolean dry_run)
+    int         mark_reachable(EPlayer player, Boolean dry_run)
+    int         mark_conquered_by_move(EPlayer player, int color, Boolean dry_run)
+    int         mark_connected_by_color(ESquare square, Boolean dry_run)
     
     // member variables
     EPlayer     player_1
@@ -48,8 +52,7 @@ ESquare:
     EOwner      get_owner()
     int         x()
     int         y()
-    Boolean     conquerable_by_player(EPlayer player)
-    Boolean     conquered_by_move(int next_color, EPlayer conqueror)
+    Boolean     is_marked()
     
     // member variables
     Boolean     border

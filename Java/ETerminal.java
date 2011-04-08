@@ -30,7 +30,7 @@ public class ETerminal {
         this.X_SIZE = 20;
         this.Y_SIZE = 20;
         this.player_1 = new EPlayer("Player 1", 0);
-        this.player_2 = new EPlayer("Player 2", 0);
+        this.player_2 = new EPlayer("Player 2", 1);
         
         // TODO: make a regex or something to accept customizations to the above attributes
         

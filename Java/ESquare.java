@@ -10,7 +10,7 @@ class ESquare {
     private int     color;
     
     // state flags
-    private Boolean visited;
+    private Boolean marked;
     public Boolean  border;
     
     // coordinates: may be deprecated if irregular boards are supported
@@ -21,7 +21,7 @@ class ESquare {
     public ESquare(int x_coord, int y_coord) {
         this.owner   = null;
         this.color   = 0;
-        this.visited = false;
+        this.marked  = false;
         this.border  = false;
         this.x_coord = x_coord;
         this.y_coord = y_coord;
@@ -33,9 +33,9 @@ class ESquare {
         return;
     }
     
-    /** Returns true if this square's 'visited' flag is true. False otherwise. **/
-    public Boolean is_visited() {
-        return this.visited;
+    /** Returns true if this square's 'marked' flag is true. False otherwise. **/
+    public Boolean is_marked() {
+        return this.marked;
     }
     
     /** Returns the square's x-coordinate. **/
@@ -59,15 +59,15 @@ class ESquare {
         return;
     }
     
-    /** Sets the 'visited' flag to true. **/
-    public void set_visited() {
-        this.visited = true;
+    /** Sets the 'marked' flag to true. **/
+    public void set_marked() {
+        this.marked = true;
         return;
     }
     
-    /** Sets the 'visited' flag to false. **/
-    public void clear_visited() {
-        this.visited = false;
+    /** Sets the 'marked' flag to false. **/
+    public void clear_marked() {
+        this.marked = false;
         return;
     }
     
@@ -80,21 +80,5 @@ class ESquare {
     public void randomize_color(int num_colors) {
         this.color = (int) Math.floor(Math.random() * num_colors);
         return;
-    }
-    
-    /** Returns false if this square is owned by the opponent. **/
-    public Boolean conquerable_by_player(EPlayer player) {
-        if(this.get_owner() == player.get_opponent()) {
-            return false;
-        }
-        return true;
-    }
-    
-    /** Returns true if this square will be conquered by playing the color. **/
-    public Boolean conquered_by_move(int next_color, EPlayer conqueror) {
-        if(this.color == next_color || this.owner == conqueror) {
-            return true;
-        }
-        return false;
     }
 }

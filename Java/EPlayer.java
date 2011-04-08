@@ -148,13 +148,51 @@ class EPlayer extends EOwner implements EPlayable {
     /** Returns the AI's next choice of color, based on the difficulty setting. **/
     public int ai_next_color_choice(EBoard board) {
         int color_choice = 0;
+        
+        // 0: plays randomly
         if(this.ai_difficulty == 0) {
             color_choice = (int) Math.floor(Math.random() * board.num_colors);
             while(!board.can_play(this, color_choice)) {
                 color_choice = (int) Math.floor(Math.random() * board.num_colors);
             }
+        
+        // 1: plays the color with the most absolute gain - does not count walled-off squares
+        } else if(this.ai_difficulty == 1) {
+            
+            // get all possible moves
+            int moves[] = possible_moves(board);
+            
+            // return the move with the highest return
+            int highest = 0;
+            for(int i = 0; i < moves.length; i++) {
+                if(moves[i] != -1) {
+                    moves[i] = board.mark_conquered_by_move(this, i, true);
+                    if(moves[i] > highest) {
+                        highest = moves[i];
+                        color_choice = i;
+                    }
+                }
+            }
         }
         return color_choice;
+    }
+    
+    /** Returns an integer array with '-1's at indeces equaling illegal colors, and '0's at all other indeces.**/
+    /// TODO: someday make this a method of EBoard
+    private int[] possible_moves(EBoard board) {
+        
+        // make an array as large as the number of possible colors
+        int moves[] = new int[board.num_colors];
+        
+        // set everything to 0
+        for(int i = 0; i < moves.length; i++) {
+            moves[i] = 0;
+        }
+        
+        // mark the current colors of the players as illegal
+        moves[board.player_1.get_color()] = -1;
+        moves[board.player_2.get_color()] = -1;
+        return moves;
     }
 }
 
