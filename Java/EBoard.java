@@ -151,11 +151,11 @@ class EBoard {
         }
     }
     
-    /** Resets 'border' flags on squares bordering the given player's territory. **/
-    public void reset_border(EPlayer player) {
+    /** Resets 'border' flags on squares bordering the given owner's territory. **/
+    public void reset_borders(EOwner owner) {
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
-                if(this.field[i][j].get_owner() == player) {
+                if(this.field[i][j].get_owner() == owner) {
                     this.field[i][j].border = false;
                 }
             }
@@ -174,29 +174,25 @@ class EBoard {
         // set the player's color
         player.set_color(next_color);
         
-        // remember the opponent for convenience
-        EPlayer opponent = player.get_opponent();
+        // mark and conquer squares conquered by the move
+        mark_conquered_by_move(player, next_color);
+        for(int i = 0; i < this.field.length; i++) {
+            for(int j = 0; j < this.field[i].length; j++) {
+                if(this.field[i][j].is_visited()) {
+                    conquer(this.field[i][j], player);
+                }
+            }
+        }
         
-        // clear border flags for this player
-        reset_border(player);
-        
-        // conquer newly connected squares
-        traverse_owned(player, next_color, player.get_starting_square().x(), player.get_starting_square().y());
-        reset_visited();
-        
-        // determine all squares that the opponent cannot reach
-        traverse_reachable(opponent, opponent.get_starting_square().x(), opponent.get_starting_square().y());
-        
-        // now conquer all squares that the opponent cannot reach
+        // mark all squares that the opponent can reach, and then conquer the unmarked ones
+        mark_reachable(player.get_opponent());
         for(int i = 0; i < this.field.length; i++) {
             for(int j = 0; j < this.field[i].length; j++) {
                 if(!this.field[i][j].is_visited()) {
                     conquer(this.field[i][j], player);
-                    // also clear borders
                 }
             }
         }
-        reset_visited();
         
         return;
     }
@@ -210,68 +206,133 @@ class EBoard {
         return;
     }
     
-    /** Performs a recursive depth-first search on the board, conquering squares for the player. **/
-    private void traverse_owned(EPlayer player, int next_color, int x, int y) {
+    /** Marks down all the squares owned by the player. **/
+    public void mark_owned(EPlayer player) {
+        reset_borders(player);
+        traverse_and_mark(player, player.get_starting_square(), "owned", player.get_color());
+    }
+    
+    /** Marks down all the squares reachable by the player. **/
+    public void mark_reachable(EPlayer player) {
+        reset_borders(player.get_opponent());
+        traverse_and_mark(player, player.get_starting_square(), "reachable", 0);
+    }
+    
+    /** Marks down all the squares that will be conquered if the player playes the given color. **/
+    public void mark_conquered_by_move(EPlayer player, int color) {
+        reset_borders(player);
+        traverse_and_mark(player, player.get_starting_square(), "conquered_by_move", color);
+    }
+    
+    /** Marks down all the squares connected to the given square by color. **/
+    public void mark_connected_by_color(ESquare square) {
+        reset_borders(neutral_owner);
+        traverse_and_mark(null, square, "connected_by_color", square.get_color());
+    }
+    
+    /** Traverses the board based on the passed condition, and marks every traversed square as 'visited'. **/
+    private void traverse_and_mark(EPlayer player, ESquare start, String condition, int color) {
         
-        // mark self as visited
-        this.field[x][y].set_visited();
+        // reset all 'visited' flags
+        reset_visited();
         
-        // recurse through all neighbors, if they exist and fit traversal conditions
-        if(x != 0) {
-            ESquare top_square = this.field[x - 1][y];
-            if(!top_square.is_visited()) {
-                if(top_square.conquered_by_move(next_color, player)) {
-                    traverse_owned(player, next_color, (x - 1), y);
+        // set up the queue
+        Queue<ESquare> queue = new LinkedList<ESquare>();
+        queue.offer(start);
+        
+        // temporary variables
+        /// int current_queue_size = 0;
+        ESquare square = null;
+        Queue<ESquare> neighbors = null;
+        
+        // while we have squares on the queue
+        while(!queue.isEmpty()) {
+            
+            /// // remember the queue size
+            /// current_queue_size = queue.size();
+            
+            /// // iterate through as many squares as there are currently on the queue
+            /// for(int i = 0; i < current_queue_size; i++) {
+                
+            // pop the top element, mark it as 'visited', and get its neighbors
+            square = queue.poll();
+            square.set_visited();
+            neighbors = neighbors(square);
+            
+            // iterate through the square's neighbors
+            while(!neighbors.isEmpty()) {
+                
+                // if the square has not yet been visited, push it onto the queue if it meets the specified condition
+                if(!neighbors.peek().is_visited()) {
+                    
+                    // owned squares
+                    if(condition.equals("owned")) {
+                        if(neighbors.peek().get_owner() == player) { 
+                            queue.offer(neighbors.poll());
+                        } else {square.border = true;}
+                    
+                    // sometime reachable squares
+                    } else if(condition.equals("reachable")) {
+                        if(neighbors.peek().get_owner() != player.get_opponent()) { 
+                            queue.offer(neighbors.poll());
+                        } else {square.border = true;}
+                    
+                    // squares that will be conquered by playing a given color
+                    } else if(condition.equals("conquered_by_move")) {
+                        if(neighbors.peek().get_owner() == player || neighbors.peek().get_color() == color) { 
+                            queue.offer(neighbors.poll());
+                        } else {square.border = true;}
+                    
+                    // squares connected to a given square by color
+                    } else if(condition.equals("connected_by_color")) {
+                        if(neighbors.peek().get_color() == square.get_color()) { 
+                            queue.offer(neighbors.poll());
+                        } else {square.border = true;}
+                    
+                    // error
+                    } else {
+                        System.err.println("BACKEND ERROR: Attempted to traverse the board using an undefined condition.");
+                        break;
+                    }
                 }
             }
-        }
-        if(y != 0) {
-            ESquare left_square = this.field[x][y - 1];
-            if(!left_square.is_visited()) {
-                if(left_square.conquered_by_move(next_color, player)) {
-                    traverse_owned(player, next_color, x, (y - 1));
-                }
-            }
-        }
-        if(x != (x_size - 1)) {
-            ESquare bottom_square = this.field[x + 1][y];
-            if(!bottom_square.is_visited()) {
-                if(bottom_square.conquered_by_move(next_color, player)) {
-                    traverse_owned(player, next_color, (x + 1), y);
-                }
-            }
-        }
-        if(y != (y_size - 1)) {
-            ESquare right_square = this.field[x][y + 1];
-            if(!right_square.is_visited()) {
-                if(right_square.conquered_by_move(next_color, player)) {
-                    traverse_owned(player, next_color, x, (y + 1));
-                }
-            }
+            /// }
         }
         
-        // conquer this square
-        conquer(this.field[x][y], player);
         return;
     }
     
-    // private void breadth-first-search() {
-        /*
-		make a queue
-		push the first element on the queue
-		while the queue is not empty
-			record the current length of the queue
-			for the current length
-				pop element
-                mark element as visited
-				perform whatever we need on the element
-				push valid children onto the queue
-		when the queue is empty, that means that we traveresed everything we can reach
-		*/
-    // }
+    /** Returns the neighboring squares of the parent. **/
+    /// TODO: someday move this method to ESquare
+    private Queue<ESquare> neighbors(ESquare parent) {
+        
+        // get the parent's coordinates
+        int x = parent.x();
+        int y = parent.y();
+        
+        // set up the return list
+        Queue<ESquare> neighbors = new LinkedList<ESquare>();
+        
+        // add every existing neighbor to the list
+        if(x != 0) {
+            neighbors.add(field[x - 1][y]);
+        }
+        if(y != 0) {
+            neighbors.add(field[x][y - 1]);
+        }
+        if(x != (x_size - 1)) {
+            neighbors.add(field[x + 1][y]);
+        }
+        if(y != (y_size - 1)) {
+            neighbors.add(field[x][y + 1]);
+        }
+        
+        // return the list as an array
+        return neighbors;
+    }
     
     /** Performs a recursive depth-first search on the board, marking all squares that the player can reach. **/
-    private void traverse_reachable(EPlayer player, int x, int y) {
+    /*private void traverse_reachable(EPlayer player, int x, int y) {
         
         // mark self as visited
         this.field[x][y].set_visited();
@@ -317,7 +378,7 @@ class EBoard {
                 }
             }
         }
-    }
+    }*/
     
     /** Returns true if either player's score is equal to or greater than the winning score. **/
     public Boolean winner_exists() {
