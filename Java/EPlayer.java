@@ -61,6 +61,8 @@ interface EPlayable {
     public void     set_starting_square(ESquare new_square);
     public void     set_color(int new_color);
     public int      get_color();
+    public void     set_difficulty(int new_difficulty);
+    public int      get_difficulty();
     public void     set_opponent(EPlayer new_opponent);
     public EPlayer  get_opponent();
     
@@ -88,6 +90,17 @@ class EPlayer extends EOwner implements EPlayable {
         this.ai_difficulty      = ai_difficulty;
         this.games_won          = 0;
         this.games_lost         = 0;
+    }
+    
+    /** Sets this player's ai difficulty level to the given one. **/
+    public void set_difficulty(int new_difficulty) {
+	this.ai_difficulty = new_difficulty;
+	return;
+    }
+    
+    /** Returns this player's ai difficulty level. **/
+    public int get_difficulty() {
+	return this.ai_difficulty;
     }
     
     /** Records that the player won a game. **/
@@ -149,15 +162,8 @@ class EPlayer extends EOwner implements EPlayable {
     public int ai_next_color_choice(EBoard board) {
         int color_choice = 0;
         
-        // 0: plays randomly
-        if(this.ai_difficulty == 0) {
-            color_choice = (int) Math.floor(Math.random() * board.num_colors);
-            while(!board.can_play(this, color_choice)) {
-                color_choice = (int) Math.floor(Math.random() * board.num_colors);
-            }
-        
         // 1: plays the color with the most absolute gain - does not count walled-off squares
-        } else if(this.ai_difficulty == 1) {
+        if(this.ai_difficulty == 1) {
             
             // get all possible moves
             int moves[] = possible_moves(board);
@@ -173,7 +179,15 @@ class EPlayer extends EOwner implements EPlayable {
                     }
                 }
             }
-        }
+	
+	// 0, undefined: plays randomly
+        } else {
+	    color_choice = (int) Math.floor(Math.random() * board.num_colors);
+            while(!board.can_play(this, color_choice)) {
+                color_choice = (int) Math.floor(Math.random() * board.num_colors);
+            }
+	}
+	
         return color_choice;
     }
     
