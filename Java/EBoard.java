@@ -348,8 +348,12 @@ class EBoard {
     
     /** Returns true if either player's score is equal to or greater than the winning score. **/
     public Boolean winner_exists() {
+        return ((this.player_1.score >= this.winning_score) || (this.player_2.score >= this.winning_score));
+    }
+    
+    /** Returns true if there are no more neutral squares. **/
+    public Boolean filled() {
         return this.neutral_owner.score == 0;
-        // return ((this.player_1.score >= this.winning_score) || (this.player_2.score >= this.winning_score));
     }
     
     /** Returns the game field. **/
