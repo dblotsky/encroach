@@ -13,6 +13,8 @@ EPlayer:
     int         num_losses()
     int         get_score()
     ESquare     get_starting_square()
+    void        set_difficulty(int new_difficulty)
+    int         get_difficulty()
 
 EOwner:
     
@@ -31,6 +33,7 @@ EBoard:
     Boolean     can_play(EPlayer player, int color)
     void        play_color(EPlayer player, int next_color)
     Boolean     winner_exists()
+    Boolean     filled()
     EPlayer     winner()
     void        end_game_and_reset()
     int         mark_owned(EPlayer player, Boolean dry_run)
@@ -50,6 +53,7 @@ ESquare:
     // methods
     int         get_color()
     EOwner      get_owner()
+    Boolean     is_owned()
     int         x()
     int         y()
     Boolean     is_marked()

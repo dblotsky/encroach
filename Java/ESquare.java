@@ -38,6 +38,11 @@ class ESquare {
         return this.marked;
     }
     
+    /** Returns true if this square's 'marked' flag is true. False otherwise. **/
+    public Boolean is_owned() {
+        return get_owner().getClass().getName().equals(EPlayer.class.getName());
+    }
+    
     /** Returns the square's x-coordinate. **/
     public int x() {
         return this.x_coord;
