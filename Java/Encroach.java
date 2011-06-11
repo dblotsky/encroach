@@ -46,14 +46,14 @@ public class Encroach extends JPanel{
 	static int BUTTON_LEFT_X = 70;
 	static int BUTTON_MID_X  = 130;
 	static int BUTTON_RIGHT_X = 190;
-	static int SQUARE_SIZE = 10;
+	static int SQUARE_SIZE = 15;
 	
 	
 	//GUI components
 	Image boardBuffer;
 	Image topBuffer;
 	Image botBuffer;
-	Color[] pallet = {Color.BLUE,Color.RED,Color.GREEN,Color.MAGENTA,Color.ORANGE,Color.PINK,Color.YELLOW};
+	Color[] pallet = {Color.BLUE,Color.RED,Color.GREEN,Color.ORANGE,Color.DARK_GRAY,Color.WHITE};
 	String status= "begining";
 	BufferedImage leftImg;
 	BufferedImage rightImg;
@@ -64,7 +64,7 @@ public class Encroach extends JPanel{
 	EPlayer player2;
 	EBoard board;
 	ESquare[][] field;
-	int numColours = 7;
+	int numColours = pallet.length;
 	int choiceOffset = 1;
 	int choiceLeft;
 	int choiceRight;
@@ -78,8 +78,8 @@ public class Encroach extends JPanel{
 		this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 		player1 = new EPlayer("Ryan",0);
-		player2 = new EPlayer("Comp",0);
-		board = new EBoard(numColours,30,30);
+		player2 = new EPlayer("Comp",1);
+		board = new EBoard(numColours,20,20);
 		board.initialize(player1, player2);
 		field = board.get_field();
 		try{
@@ -102,8 +102,10 @@ public class Encroach extends JPanel{
 		Graphics bg = boardBuffer.getGraphics();
 		for (int x = 0; x < board.x_size;x++){
 			for (int y = 0; y < board.y_size; y++) {
-				bg.setColor(pallet[field[x][y].color]);
+				bg.setColor(Color.BLACK);
 				bg.fillRect(x*SQUARE_SIZE, y*SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+                bg.setColor(pallet[field[x][y].get_color()]);
+                bg.fillRect(x*SQUARE_SIZE+1, y*SQUARE_SIZE+1, SQUARE_SIZE-2, SQUARE_SIZE-2);
 			}
 		}
 	}
@@ -165,18 +167,18 @@ public class Encroach extends JPanel{
 		choiceLeft = choiceOffset - 1;
 		choiceMid = choiceOffset;
 		choiceRight = choiceOffset + 1;
-		if (choiceLeft == player2.color){
+		if (choiceLeft == player2.get_color()){
 			choiceLeft--;
 		}
-		if (choiceLeft < 0 && player2.color != numColours - 1){
+		if (choiceLeft < 0 && player2.get_color() != numColours - 1){
 			choiceLeft = numColours - 1;
 		}else if (choiceLeft < 0){
 			choiceLeft = numColours - 2;
 			
-		}if (choiceRight == player2.color){
+		}if (choiceRight == player2.get_color()){
 			choiceRight++;
 		}	
-		if (choiceRight > numColours -1 && player2.color != 0){
+		if (choiceRight > numColours -1 && player2.get_color() != 0){
 			choiceRight = 0;
 		}else if (choiceRight > numColours -1){
 			choiceRight = 1;
@@ -189,10 +191,10 @@ public class Encroach extends JPanel{
 	
 	void shiftRight(){
 		choiceOffset++;
-		if (choiceOffset == player2.color){
+		if (choiceOffset == player2.get_color()){
 			choiceOffset++;
 		}
-		if (choiceOffset > numColours - 1 && player2.color != 0){
+		if (choiceOffset > numColours - 1 && player2.get_color() != 0){
 			choiceOffset = 0;
 		}else if (choiceOffset > numColours - 1){
 			choiceOffset = 1;
@@ -202,10 +204,10 @@ public class Encroach extends JPanel{
 	
 	void shiftLeft(){
 		choiceOffset--;
-		if (choiceOffset == player2.color){
+		if (choiceOffset == player2.get_color()){
 			choiceOffset--;
 		} 
-		if (choiceOffset < 0 && player2.color != numColours - 1){
+		if (choiceOffset < 0 && player2.get_color() != numColours - 1){
 			choiceOffset = numColours - 1;
 		}else if (choiceOffset < 0){
 			choiceOffset = numColours - 2;
@@ -216,7 +218,7 @@ public class Encroach extends JPanel{
 	public static void main (String args[]) {
         
         // run only in terminal if passed the 'terminal' option
-        try{if(args[0].equals("terminal")){
+        try{if(args[0].equals("-t") || args[0].equals("--terminal")){
             new ETerminal(args).run(System.in); return; 
         }}catch(Exception e){}
         
@@ -321,7 +323,7 @@ public class Encroach extends JPanel{
 						game.shiftRight();
 					}
 				}else if (y > TOPMENU_HEIGHT && y < TOPMENU_HEIGHT + BOARD_HEIGHT){
-					game.makeMove(game.field[x/SQUARE_SIZE][(y-TOPMENU_HEIGHT)/SQUARE_SIZE].color);
+					game.makeMove(game.field[x/SQUARE_SIZE][(y-TOPMENU_HEIGHT)/SQUARE_SIZE].get_color());
 				}
 			}
 		};
