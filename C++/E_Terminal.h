@@ -13,7 +13,7 @@ class E_Terminal: public E_View {
         void update();
         
     private:
-        
+        void print_board();
 };
 
 #endif
