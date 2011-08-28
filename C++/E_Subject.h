@@ -3,9 +3,9 @@
 
 #include <set>
 
-using namespace std;
-
 #include "E_Observer.h"
+
+using std::set;
 
 class E_Subject {
     public:

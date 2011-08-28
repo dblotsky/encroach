@@ -18,4 +18,3 @@ class E_View : public E_Observer {
 }; // E_View
 
 #endif
-

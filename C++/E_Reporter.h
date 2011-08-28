@@ -1,19 +1,20 @@
 #ifndef _E_REPORTER_
 #define _E_REPORTER_
 
-#include <iostream>
+using std::string;
 
-using namespace std;
+enum ReportStage {PROLOGUE, EPILOGUE};
 
-void report_method_call(const string& method_name, const string& class_name);
-void report_constructor(const string& class_name);
-void report_destructor(const string& class_name);
+void report_method(const string& method_name, const string& class_name, const ReportStage stage);
+void report_constructor(const string& class_name, const ReportStage stage);
+void report_destructor(const string& class_name, const ReportStage stage);
 
 /*
-report_method_call("", "");
-report_constructor("");
-report_destructor("");
+Usage:
+
+    report_method_call("", "");
+    report_constructor("");
+    report_destructor("");
 */
 
 #endif
-

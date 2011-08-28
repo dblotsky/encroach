@@ -6,8 +6,6 @@
 #include "E_View.h"
 #include "E_Terminal.h"
 
-using namespace std;
-
 int main(int argc, char* argv[]) {
 
     // make a back-end
