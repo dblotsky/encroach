@@ -33,7 +33,7 @@ void E_Terminal::run() {
     while (cin >> command) {
         if (command == "q" || command == "quit" || command == "exit") {
             break;
-        } else if (command == "p" || command == "print" || command == "") {
+        } else if (command.length() == 0 || command == "p" || command == "print" || command == "d" || command == "display") {
             print_board();
         } else {
             cout << "Invalid command." << endl;
