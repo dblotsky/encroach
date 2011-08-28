@@ -15,11 +15,16 @@ OBJECTS     = $(FNCN_OBJS) $(VIEW_OBJS) $(MODL_OBJS) $(CTRL_OBJS)
 DEPENDS     = ${OBJECTS:.o=.d}
 EXECUTABLE  = encroach.out
 
-$(EXECUTABLE): $(OBJECTS)
+# build rule
+$(EXECUTABLE) : $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
+# dependencies
 -include $(DEPENDS)
 
+# other targets
 clean :
-	rm -rf $(DEPENDS) $(OBJECTS)
+	rm -rf $(DEPENDS) $(OBJECTS) $(EXECUTABLE)
 
+neat :
+	rm -rf $(DEPENDS) $(OBJECTS)
