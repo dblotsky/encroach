@@ -28,9 +28,9 @@ E_Terminal::~E_Terminal() {
 void E_Terminal::run() {
     report_method("run", "E_Terminal", PROLOGUE);
     
-    string command;
+    string command = "";
     
-    while (cin << command) {
+    while (cin >> command) {
         if (command == "q" || command == "quit" || command == "exit") {
             break;
         } else if (command == "p" || command == "print" || command == "") {
