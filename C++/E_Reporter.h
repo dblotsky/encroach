@@ -17,7 +17,7 @@ void report_destructor(const string& class_name, const ReportStage stage);
 
 // template reporters
 template <typename variable_type> void report_variable (const string& name, variable_type variable) {
-    std::cout << name << " : " << variable << std::endl;
+    std::cerr << name << " : " << variable << std::endl;
 }
 
 /*
