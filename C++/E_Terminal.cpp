@@ -50,7 +50,7 @@ void E_Terminal::run() {
         } else if (command.length() == 0 || command == "p" || command == "print" || command == "d" || command == "display") {
             print_board();
         } else {
-            /*cout << "Invalid command." << endl;*/
+            cout << "Invalid command." << endl;
         }
     }
     
@@ -70,9 +70,6 @@ void E_Terminal::update() {
 void E_Terminal::print_board() {
     report_method("print_board", "E_Terminal", PROLOGUE);
     
-    for (int i = 0; i < 12; i++) {
-        cout << '\b';
-    } 
     cout << "000\n000\n000\n";
     
     report_method("print_board", "E_Terminal", EPILOGUE);
@@ -80,6 +77,6 @@ void E_Terminal::print_board() {
 }
 
 void E_Terminal::print_prompt() {
-    /*cout << "--> \a";*/
+    cout << "--> ";
     return;
 }
