@@ -5,6 +5,9 @@
 #include "E_Reporter.h"
 
 using std::string;
+using std::cout;
+using std::cin;
+using std::endl;
 
 E_Terminal::E_Terminal(E_Controller* controller, E_Model* model, int argc, char* argv[]): E_View(controller, model) {
     report_constructor("E_Terminal", PROLOGUE);
