@@ -2,6 +2,7 @@
 #define _E_REPORTER_
 
 #include <string>
+#include <iostream>
 
 using std::string;
 
@@ -9,12 +10,14 @@ using std::string;
 
 enum ReportStage {PROLOGUE, EPILOGUE};
 
+// reporters
 void report_method(const string& method_name, const string& class_name, const ReportStage stage);
 void report_constructor(const string& class_name, const ReportStage stage);
 void report_destructor(const string& class_name, const ReportStage stage);
 
+// template reporters
 template <typename variable_type> void report_variable (const string& name, variable_type variable) {
-    cout << name << " : " << variable << endl;
+    std::cout << name << " : " << variable << std::endl;
 }
 
 /*
