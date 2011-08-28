@@ -1,6 +1,8 @@
 #ifndef _E_REPORTER_
 #define _E_REPORTER_
 
+#include <string>
+
 using std::string;
 
 enum ReportStage {PROLOGUE, EPILOGUE};
