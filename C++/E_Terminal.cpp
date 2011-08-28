@@ -50,7 +50,7 @@ void E_Terminal::run() {
         } else if (command.length() == 0 || command == "p" || command == "print" || command == "d" || command == "display") {
             print_board();
         } else {
-            cout << "Invalid command." << endl;
+            /*cout << "Invalid command." << endl;*/
         }
     }
     
@@ -80,6 +80,6 @@ void E_Terminal::print_board() {
 }
 
 void E_Terminal::print_prompt() {
-    cout << "--> \a";
+    /*cout << "--> \a";*/
     return;
 }
