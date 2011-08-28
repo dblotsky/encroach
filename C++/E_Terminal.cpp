@@ -28,12 +28,20 @@ E_Terminal::~E_Terminal() {
 void E_Terminal::run() {
     report_method("run", "E_Terminal", PROLOGUE);
     
-    // entered command
+    // char array and string to store entered command
+    char raw_command[256];
     string command = "";
     
-    // loop a prompt
-    print_prompt();
-    while (cin >> command) {
+    // loop a prompt while cin is good
+    while (cin.good()) {
+        
+        print_prompt();
+        
+        // process command
+        cin.getline(raw_command, 256);
+        command = raw_command;
+        
+        // report the command
         report_variable<string>("command", command);
         
         if (command == "q" || command == "quit" || command == "exit") {
@@ -43,7 +51,6 @@ void E_Terminal::run() {
         } else {
             cout << "Invalid command." << endl;
         }
-        print_prompt();
     }
     
     report_method("run", "E_Terminal", EPILOGUE);
