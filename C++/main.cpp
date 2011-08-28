@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
     E_Controller*   controller  = new E_Controller(model);
     
     // make a front-end
-    E_Terminal* view = new E_Terminal(controller, model);
+    E_Terminal* view = new E_Terminal(controller, model, argc, argv);
     
     // run the game
     view->run();
