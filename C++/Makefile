@@ -4,7 +4,7 @@
 CXX         = g++
 CXXFLAGS    = -Wall -O -g -MMD
 
-objects
+# objects
 VIEW_OBJS   = Observer.o View.o Terminal.o
 MODL_OBJS   = Subject.o Model.o
 CTRL_OBJS   = Controller.o
