@@ -10,7 +10,7 @@ using namespace std;
 E_Controller::E_Controller(E_Model* model) {
     report_constructor("E_Controller", PROLOGUE);
     
-    this.model = model;
+    this->model = model;
     
     report_constructor("E_Controller", EPILOGUE);
 }

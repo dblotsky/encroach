@@ -12,7 +12,7 @@ void report_destructor(const string& class_name, const ReportStage stage);
 /*
 Usage:
 
-    report_method_call("", "");
+    report_method("", "");
     report_constructor("");
     report_destructor("");
 */
