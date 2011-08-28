@@ -70,7 +70,7 @@ void E_Terminal::update() {
 void E_Terminal::print_board() {
     report_method("print_board", "E_Terminal", PROLOGUE);
     
-    cout << "000\n000\n000\n";
+    cout << "0 0 0\n0 0 0\n0 0 0\n";
     
     report_method("print_board", "E_Terminal", EPILOGUE);
     return;
