@@ -10,7 +10,7 @@ using namespace std;
 E_View::E_View(E_Controller* controller, E_Model* model) {
     report_constructor("E_View", PROLOGUE);
     
-    this.controller = ccontroller;
+    this.controller = controller;
     this.model = model;
     
     // register view as observer of model

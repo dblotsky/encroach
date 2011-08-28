@@ -12,8 +12,8 @@ class E_View : public E_Observer {
         virtual void update();
         
     protected:
-        E_Model*        model;
         E_Controller*   controller;
+        E_Model*        model;
         
 }; // E_View
 
