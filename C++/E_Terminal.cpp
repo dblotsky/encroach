@@ -76,10 +76,6 @@ void E_Terminal::print_board() {
 }
 
 void E_Terminal::print_prompt() {
-    report_method("print_prompt", "E_Terminal", PROLOGUE);
-    
     cout << "--> ";
-    
-    report_method("print_prompt", "E_Terminal", EPILOGUE);
     return;
 }
