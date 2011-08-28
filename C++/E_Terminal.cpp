@@ -1,9 +1,10 @@
 #include <iostream>
-
-using namespace std;
+#include <string>
 
 #include "E_Terminal.h"
 #include "E_Reporter.h"
+
+using std::string;
 
 E_Terminal::E_Terminal(E_Controller* controller, E_Model* model, int argc, char* argv[]): E_View(controller, model) {
     report_constructor("E_Terminal", PROLOGUE);
@@ -24,7 +25,17 @@ E_Terminal::~E_Terminal() {
 void E_Terminal::run() {
     report_method("run", "E_Terminal", PROLOGUE);
     
+    string command;
     
+    while (cin << command) {
+        if (command == "q" || command == "quit" || command == "exit") {
+            break;
+        } else if (command == "p" || command == "print" || command == "") {
+            print_board();
+        } else {
+            cout << "Invalid command." << endl;
+        }
+    }
     
     report_method("run", "E_Terminal", EPILOGUE);
     return;
@@ -39,3 +50,11 @@ void E_Terminal::update() {
     return;
 }
 
+void E_Terminal::print_board() {
+    report_method("print_board", "E_Terminal", PROLOGUE);
+    
+    cout << "000\n000\n000\n" << endl;
+    
+    report_method("print_board", "E_Terminal", EPILOGUE);
+    return;
+}
