@@ -18,7 +18,7 @@ E_Terminal::~E_Terminal() {
 void E_Terminal::run() {
     report_method("run", "E_Terminal", PROLOGUE);
 
-    cerr << "A E_Terminal was executed." << endl;
+    cerr << "An E_Terminal was executed." << endl;
     
     report_method("run", "E_Terminal", EPILOGUE);
     return;
