@@ -37,13 +37,14 @@ void E_Terminal::run() {
         
         print_prompt();
         
-        // process command
+        // process input
         cin.getline(raw_command, 256);
         command = raw_command;
         
         // report the command
         report_variable<string>("command", command);
         
+        // process command
         if (command == "q" || command == "quit" || command == "exit") {
             break;
         } else if (command.length() == 0 || command == "p" || command == "print" || command == "d" || command == "display") {
