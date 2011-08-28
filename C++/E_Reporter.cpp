@@ -10,9 +10,7 @@ using std::endl;
 void report_method(const string& method_name, const string& class_name, const ReportStage stage) {
     if (stage == PROLOGUE) {
         cerr << "/*** P-METH: \"" << method_name << "\" on object \"" << class_name << "\"" << endl;
-        cerr << "|" << endl;
     } else if (stage == EPILOGUE) {
-        cerr << "|" << endl;
         cerr << "\\*** E-METH: \"" << method_name << "\" on object \"" << class_name << "\"" << endl;
     }
     return;
@@ -22,9 +20,7 @@ void report_method(const string& method_name, const string& class_name, const Re
 void report_constructor(const string& class_name, const ReportStage stage) {
     if (stage == PROLOGUE) {
         cerr << "/*** P-CSTR: \"" << class_name << "\"" << endl;
-        cerr << "|" << endl;
     } else if (stage == EPILOGUE) {
-        cerr << "|" << endl;
         cerr << "\\*** E-CSTR: \"" << class_name << "\"" << endl;
     }
     return;
@@ -34,9 +30,7 @@ void report_constructor(const string& class_name, const ReportStage stage) {
 void report_destructor(const string& class_name, const ReportStage stage) {
     if (stage == PROLOGUE) {
         cerr << "/*** P-DSTR: \"" << class_name << "\"" << endl;
-        cerr << "|" << endl;
     } else if (stage == EPILOGUE) {
-        cerr << "|" << endl;
         cerr << "\\*** E-DSTR: \"" << class_name << "\"" << endl;
     }
     return;

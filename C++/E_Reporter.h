@@ -5,6 +5,8 @@
 
 using std::string;
 
+// TODO: make this a class, and report fancy method call trees
+
 enum ReportStage {PROLOGUE, EPILOGUE};
 
 void report_method(const string& method_name, const string& class_name, const ReportStage stage);
