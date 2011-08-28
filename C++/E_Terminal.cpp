@@ -28,17 +28,22 @@ E_Terminal::~E_Terminal() {
 void E_Terminal::run() {
     report_method("run", "E_Terminal", PROLOGUE);
     
+    // entered command
     string command = "";
     
+    // loop a prompt
+    print_prompt();
     while (cin >> command) {
+        report_variable<string>("command", command);
+        
         if (command == "q" || command == "quit" || command == "exit") {
             break;
         } else if (command.length() == 0 || command == "p" || command == "print" || command == "d" || command == "display") {
-            report_variable<string>("command", command);
             print_board();
         } else {
             cout << "Invalid command." << endl;
         }
+        print_prompt();
     }
     
     report_method("run", "E_Terminal", EPILOGUE);
@@ -60,5 +65,14 @@ void E_Terminal::print_board() {
     cout << "000\n000\n000\n";
     
     report_method("print_board", "E_Terminal", EPILOGUE);
+    return;
+}
+
+void E_Terminal::print_prompt() {
+    report_method("print_prompt", "E_Terminal", PROLOGUE);
+    
+    cout << "--> ";
+    
+    report_method("print_prompt", "E_Terminal", EPILOGUE);
     return;
 }

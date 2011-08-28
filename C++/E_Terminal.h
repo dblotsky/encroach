@@ -14,6 +14,7 @@ class E_Terminal: public E_View {
         
     private:
         void print_board();
+        void print_prompt();
 };
 
 #endif
