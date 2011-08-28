@@ -34,6 +34,7 @@ void E_Terminal::run() {
         if (command == "q" || command == "quit" || command == "exit") {
             break;
         } else if (command.length() == 0 || command == "p" || command == "print" || command == "d" || command == "display") {
+            report_variable<string>("command", command);
             print_board();
         } else {
             cout << "Invalid command." << endl;
