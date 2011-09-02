@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cassert>
 
 #include "E_Reporter.h"
 
@@ -7,8 +8,11 @@
 
 using std::string;
 using std::cout;
+using std::cerr;
 using std::cin;
 using std::endl;
+
+enum Command {QUIT, PRINT, EMPTY, SWITCH_REPORTING, INVALID};
 
 E_Terminal::E_Terminal(E_Model* model, E_Controller* controller, int argc, char* argv[]): E_View(model, controller) {
     prologue("E_Terminal");
@@ -23,33 +27,64 @@ E_Terminal::~E_Terminal() {
 void E_Terminal::run() {
     prologue("E_Terminal", "run");
     
-    // char array and string to store entered command
+    // char array, string, and enum variable to store entered command
     char raw_command[256];
-    string command = "";
+    string command_string = "";
+    Command command;
     
-    // loop a prompt while cin is good
-    while (cin.good()) {
+    // exit flag
+    bool exited = false;
+    
+    // loop a prompt while cin is good and while the user has not exited
+    while (cin.good() && !exited) {
         
         print_prompt();
         
         // process input
         cin.getline(raw_command, 256);
-        command = raw_command;
+        command_string = raw_command;
         
-        // report the command
-        report_variable<string>("command", command);
+        // report command string
+        report_variable<string>("command_string", command_string);
         
-        // process command
-        if (command == "q" || command == "quit" || command == "exit") {
-            break;
-        } else if (command == "p" || command == "print" || command == "d" || command == "display") {
-            print_board();
-        } else if (command == "debug" || command == "DEBUG" || command == "dbg" || command == "DBG") {
-            switch_reporting();
-        } else if (command.length() == 0) {
-            
+        // determine command
+        if (command_string == "q" || command_string == "quit" || command_string == "exit") {
+            command = QUIT;
+        } else if (command_string == "p" || command_string == "print" || command_string == "d" || command_string == "display") {
+            command = PRINT;
+        } else if (command_string.length() == 0) {
+            command = EMPTY;
+        } else if (command_string == "debug" || command_string == "DEBUG" || command_string == "dbg" || command_string == "DBG") {
+            command = SWITCH_REPORTING;
         } else {
-            cout << "Invalid command: " << QUOTE << command << QUOTE << "." << endl;
+            command = INVALID;
+        }
+        
+        // act on command
+        switch (command) {
+            case QUIT:
+                exited = true;
+                break;
+                
+            case PRINT:
+                print_board();
+                break;
+                
+            case EMPTY:
+                break;
+                
+            case SWITCH_REPORTING:
+                switch_reporting();
+                break;
+                
+            case INVALID:
+                cout << "Invalid command: " << QUOTE << command_string << QUOTE << "." << endl;
+                break;
+                
+            default:
+                cerr << endl << "Caught an enum value for which a case does not exist!" << endl;
+                assert(false);
+                break;
         }
     }
     
