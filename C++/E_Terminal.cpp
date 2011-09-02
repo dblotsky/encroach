@@ -42,10 +42,14 @@ void E_Terminal::run() {
         // process command
         if (command == "q" || command == "quit" || command == "exit") {
             break;
-        } else if (command.length() == 0 || command == "p" || command == "print" || command == "d" || command == "display") {
+        } else if (command == "p" || command == "print" || command == "d" || command == "display") {
             print_board();
+        } else if (command == "debug" || command == "DEBUG" || command == "dbg" || command == "DBG") {
+            switch_reporting();
+        } else if (command.length() == 0) {
+            
         } else {
-            cout << "Invalid command." << endl;
+            cout << "Invalid command: " << QUOTE << command << QUOTE << "." << endl;
         }
     }
     
