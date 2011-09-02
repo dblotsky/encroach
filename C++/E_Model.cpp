@@ -1,17 +1,13 @@
-#include <vector>
-#include <deque>
-
-using namespace std;
-
-#include "E_Model.h"
 #include "E_Reporter.h"
 
+#include "E_Model.h"
+
 E_Model::E_Model() {
-    report_constructor("E_Model", PROLOGUE);
-    report_constructor("E_Model", EPILOGUE);
+    prologue("E_Model");
+    epilogue("E_Model");
 }
 
 E_Model::~E_Model(){
-    report_destructor("E_Model", PROLOGUE);
-    report_destructor("E_Model", EPILOGUE);
+    prologue("E_Model", "~E_Model");
+    epilogue("E_Model", "~E_Model");
 }

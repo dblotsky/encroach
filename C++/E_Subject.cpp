@@ -1,38 +1,39 @@
 #include <set>
 
+#include "E_Reporter.h"
+
 #include "E_Subject.h"
 #include "E_Observer.h"
-#include "E_Reporter.h"
 
 using std::set;
 
 void E_Subject::subscribe(E_Observer* new_observer) {
-    report_method("subscribe", "E_Subject", PROLOGUE);
+    prologue("E_Subject", "subscribe");
     
     observers.insert(new_observer);
     
-    report_method("subscribe", "E_Subject", EPILOGUE);
+    epilogue("E_Subject", "subscribe");
     return;
 }
 
 void E_Subject::unsubscribe(E_Observer* former_observer) {
-    report_method("unsubscribe", "E_Subject", PROLOGUE);
+    prologue("E_Subject", "unsubscribe");
     
     observers.erase(former_observer);
     
-    report_method("unsubscribe", "E_Subject", EPILOGUE);
+    epilogue("E_Subject", "unsubscribe");
     return;
 }
 
 void E_Subject::notify() {
-    report_method("notify", "E_Subject", PROLOGUE);
+    prologue("E_Subject", "notify");
     
     set<E_Observer*>::iterator i;
     for(i = observers.begin(); i != observers.end(); ++i) {
         (*i)->update();
     }
     
-    report_method("notify", "E_Subject", EPILOGUE);
+    epilogue("E_Subject", "notify");
     return;
 }
 

@@ -1,21 +1,17 @@
-#include <stdlib.h>
-#include <iostream>
-
-using namespace std;
+#include "E_Reporter.h"
 
 #include "E_Controller.h"
 #include "E_Model.h"
-#include "E_Reporter.h"
 
 E_Controller::E_Controller(E_Model* model) {
-    report_constructor("E_Controller", PROLOGUE);
+    prologue("E_Controller");
     
     this->model = model;
     
-    report_constructor("E_Controller", EPILOGUE);
+    epilogue("E_Controller");
 }
 
 E_Controller::~E_Controller() {
-    report_destructor("E_Controller", PROLOGUE);
-    report_destructor("E_Controller", EPILOGUE);
+    prologue("E_Controller", "~E_Controller");
+    epilogue("E_Controller", "~E_Controller");
 }

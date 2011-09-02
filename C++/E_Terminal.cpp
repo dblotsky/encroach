@@ -1,32 +1,27 @@
 #include <iostream>
 #include <string>
 
-#include "E_Terminal.h"
 #include "E_Reporter.h"
+
+#include "E_Terminal.h"
 
 using std::string;
 using std::cout;
 using std::cin;
 using std::endl;
 
-E_Terminal::E_Terminal(E_Controller* controller, E_Model* model, int argc, char* argv[]): E_View(controller, model) {
-    report_constructor("E_Terminal", PROLOGUE);
-    
-    
-    
-    report_constructor("E_Terminal", EPILOGUE);
+E_Terminal::E_Terminal(E_Model* model, E_Controller* controller, int argc, char* argv[]): E_View(model, controller) {
+    prologue("E_Terminal");
+    epilogue("E_Terminal");
 }
 
 E_Terminal::~E_Terminal() {
-    report_destructor("E_Terminal", PROLOGUE);
-    
-    
-    
-    report_destructor("E_Terminal", EPILOGUE);
+    prologue("E_Terminal", "~E_Terminal");
+    epilogue("E_Terminal", "~E_Terminal");
 }
 
 void E_Terminal::run() {
-    report_method("run", "E_Terminal", PROLOGUE);
+    prologue("E_Terminal", "run");
     
     // char array and string to store entered command
     char raw_command[256];
@@ -54,25 +49,22 @@ void E_Terminal::run() {
         }
     }
     
-    report_method("run", "E_Terminal", EPILOGUE);
+    epilogue("E_Terminal", "run");
     return;
 }
 
 void E_Terminal::update() {
-    report_method("update", "E_Terminal", PROLOGUE);
-    
-    
-    
-    report_method("update", "E_Terminal", EPILOGUE);
+    prologue("E_Terminal", "update");
+    epilogue("E_Terminal", "update");
     return;
 }
 
 void E_Terminal::print_board() {
-    report_method("print_board", "E_Terminal", PROLOGUE);
+    prologue("E_Terminal", "print_board");
     
     cout << "0 0 0\n0 0 0\n0 0 0\n";
     
-    report_method("print_board", "E_Terminal", EPILOGUE);
+    epilogue("E_Terminal", "print_board");
     return;
 }
 

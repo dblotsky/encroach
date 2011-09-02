@@ -9,11 +9,11 @@ class E_Controller {
         ~E_Controller();
         
         // events
-        // void event_new_seed(int seed);
+        // TODO: make event functions
         
     private:
         E_Model* model;
         
-}; // E_Controller
+};
 
 #endif

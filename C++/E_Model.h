@@ -10,6 +10,6 @@ class E_Model : public E_Subject {
         
     private:
         
-}; // E_Model
+};
 
 #endif

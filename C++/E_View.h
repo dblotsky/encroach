@@ -7,14 +7,14 @@
 
 class E_View : public E_Observer {
     public:
-        E_View(E_Controller*, E_Model*);
+        E_View(E_Model*, E_Controller*);
         virtual ~E_View();
         virtual void update();
         
     protected:
-        E_Controller*   controller;
         E_Model*        model;
+        E_Controller*   controller;
         
-}; // E_View
+};
 
 #endif

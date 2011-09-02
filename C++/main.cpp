@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "E_Model.h"
 #include "E_Controller.h"
 #include "E_View.h"
@@ -8,12 +5,12 @@
 
 int main(int argc, char* argv[]) {
 
-    // make a back-end
+    // create a back-end
     E_Model*        model       = new E_Model();
     E_Controller*   controller  = new E_Controller(model);
     
-    // make a front-end
-    E_Terminal* view = new E_Terminal(controller, model, argc, argv);
+    // create a front-end
+    E_Terminal* view = new E_Terminal(model, controller, argc, argv);
     
     // run the game
     view->run();
@@ -26,4 +23,4 @@ int main(int argc, char* argv[]) {
     delete model;
 
     return 0;
-} // main
+}

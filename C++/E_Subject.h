@@ -11,14 +11,13 @@ class E_Subject {
     public:
        void subscribe(E_Observer*);
        void unsubscribe(E_Observer*);
-    
+        
     protected:
        void notify();
-    
+        
     private:
        set<E_Observer*> observers;
-    
-}; // E_Subject
+        
+};
 
 #endif
-
