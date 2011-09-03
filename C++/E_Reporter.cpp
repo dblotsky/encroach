@@ -9,157 +9,265 @@ using std::cerr;
 using std::endl;
 using std::stringstream;
 
-static int  REPORT_DEPTH = 0;
-static bool REPORTING_ON = true;
+// constants
+const string PRCD_START_LABEL   = "   ";
+const string PRCD_END_LABEL     = "   ";
+const string MTHD_START_LABEL   = "   ";
+const string MTHD_END_LABEL     = "   ";
+const string CNST_START_LABEL   = "[ ]";
+const string CNST_END_LABEL     = "[+]";
+const string DSTR_START_LABEL   = "[ ]";
+const string DSTR_END_LABEL     = "[-]";
 
-void switch_reporting() {
-    if (REPORTING_ON) {
-        REPORTING_ON = false;
-        cerr << "Debugging OFF." << endl;
-        return;
-    }
-    REPORTING_ON = true;
-    cerr << "Debugging ON." << endl;
-    return;
+const string DEBUG_MARKER       = "DEBUG: ";
+const string INDENT_TOKEN       = "| ";
+
+const int    ALIGN_BUFFER_SIZE  = 16;
+const string ALIGN_BUFFER_CHAR  = "-";
+
+const string START_CHAR         = "+";
+const string END_CHAR           = "\\";
+
+// report exclusions
+const int    NUM_EXCLUDED_CLASSES = 1;
+const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {};
+
+// statics
+static int  stack_depth = 0;
+static bool debug = true;
+
+// globals
+static bool been_function_at_depth = false;
+static bool been_value_at_depth = false;
+
+void report_value(const string& value_name, const string& value) {
+    string report_string = QUOTE + value_name + QUOTE + ": " + QUOTE + value + QUOTE;
+    debug_print(report_string, true);
 }
 
-void prologue(const string& class_name, const string& function_name) {
-    
-    report_function(PROLOGUE, class_name, function_name);
-    REPORT_DEPTH++;
-    
-    return;
-}
+void report_function(const ReportStage stage, const string& class_name, const string& function_name) {
 
-void epilogue(const string& class_name, const string& function_name) {
-    
-    REPORT_DEPTH--;
-    report_function(EPILOGUE, class_name, function_name);
-    
-    return;
-}
-
-void report_function(const ReportStage ReportStage, const string& class_name, const string& function_name) {
-    
-    // assertions
-    assert(!(class_name == "" && function_name == ""));
-    
-    // arguments for print function
-    string line_start;
+    // determine the label and the message
     string label;
     string message;
-    
-    // derive the constructor's name
-    string constructor_name = class_name;
 
-    // derive the destructor's name
-    stringstream destructor_stream;
-    destructor_stream << "~" << class_name;
-    string destructor_name = destructor_stream.str();
-    
-    // determine the function type
-    FunctionType function_type;
-    if (class_name == "" && function_name != "") {
-        function_type = PROCEDURE;
-    } else if (function_name == constructor_name || (class_name != "" && function_name == "")) {
-        function_type = CONSTRUCTOR;
-    } else if (function_name == destructor_name) {
-        function_type = DESTRUCTOR;
-    } else {
-        function_type = METHOD;
-    }
-    
-    // determine line start
-    if (ReportStage == PROLOGUE) {
-        line_start = P_LINE_START;
-    } else {
-        line_start = E_LINE_START;
-    }
-    
-    // determine values of the other print parameters
-    stringstream message_stream;
+    FunctionType function_type = determine_function_type(class_name, function_name);
     if (function_type == PROCEDURE) {
-        
-        message_stream << QUOTE << function_name << QUOTE;
-        message = message_stream.str();
-        label   = determine_label(ReportStage, PROCEDURE_P_LABEL, PROCEDURE_E_LABEL);
-        
+        message = QUOTE + function_name + QUOTE;
+        label   = start_or_end(stage, PRCD_START_LABEL, PRCD_END_LABEL);
+
     } else if (function_type == METHOD) {
-        
-        message_stream << QUOTE << function_name << QUOTE << " on " << QUOTE << class_name << QUOTE;
-        message = message_stream.str();
-        label   = determine_label(ReportStage, METHOD_P_LABEL, METHOD_E_LABEL);
-        
+        message = QUOTE + function_name + QUOTE + " on " + QUOTE + class_name + QUOTE;
+        label   = start_or_end(stage, MTHD_START_LABEL, MTHD_END_LABEL);
+
     } else if (function_type == CONSTRUCTOR) {
-        
-        message_stream << QUOTE << class_name << QUOTE;
-        message = message_stream.str();
-        label   = determine_label(ReportStage, CONSTRUCTOR_P_LABEL, CONSTRUCTOR_E_LABEL);
-        
+        message = QUOTE + class_name + QUOTE;
+        label   = start_or_end(stage, CNST_START_LABEL, CNST_END_LABEL);
+
     } else if (function_type == DESTRUCTOR) {
-        
-        message_stream << QUOTE << class_name << QUOTE;
-        message = message_stream.str();
-        label   = determine_label(ReportStage, DESTRUCTOR_P_LABEL, DESTRUCTOR_E_LABEL);
-        
+        message = QUOTE + class_name + QUOTE;
+        label   = start_or_end(stage, DSTR_START_LABEL, DSTR_END_LABEL);
+
     } else {
-        cerr << "Invalid function type." << endl;
+        cerr << "Got function type for which there is no case." << endl;
         assert(false);
     }
-    
-    // print the report
-    report_print(line_start, label, message);
+
+    string report_string = label + SPACE + message;
+    string start_token   = start_or_end(stage, START_CHAR, END_CHAR);
+
+    debug_print(report_string, true, true, start_token);
+    return;
 }
 
-string determine_label(ReportStage stage, const string& prologue_string, const string& epilogue_string) {
-    if (stage == PROLOGUE) {
-        return prologue_string;
-    } else if (stage == EPILOGUE) {
-        return epilogue_string;
+// returns first string argument if stage is START; returns second string argument if stage is END
+string start_or_end(ReportStage stage, const string& start_string, const string& end_string) {
+    if (stage == START) {
+        return start_string;
+    } else if (stage == END) {
+        return end_string;
     } else {
-        cerr << "Invalid enum value: " << QUOTE << stage << QUOTE << "." << endl;
+        cerr << "Got an invalid enum value: " << QUOTE << stage << QUOTE << "." << endl;
         assert(false);
     }
 }
 
-void report_print(const string& line_start, const string& label, const string& message) {
+// returns a type of function based on passed class name and function name
+FunctionType determine_function_type(const string& class_name, const string& function_name) {
     
-    if (!REPORTING_ON) {return;}
+    // class name and function name must not both be empty
+    assert(!(class_name == "" && function_name == ""));
     
-    // print the debug marker
+    string constructor_name = class_name;
+    string destructor_name  = string("~") + class_name;
+
+    // PROCEDURE: empty class name
+    if (class_name == "" && function_name != "") {
+        return PROCEDURE;
+
+    // CONSTRUCTOR: function name is class name
+    } else if (function_name == constructor_name || (class_name != "" && function_name == "")) {
+        return CONSTRUCTOR;
+
+    // DESTRUCTOR: function name is class name preceded by a tilde
+    } else if (function_name == destructor_name) {
+        return DESTRUCTOR;
+
+    // METHOD: class name is not empty and function is not a constructor or destructor
+    } else {
+        return METHOD;
+    }
+}
+
+// print debug info at the beginning of a function
+void prologue(const string& class_name, const string& function_name) {
+    
+    if (!debug) { return; }
+    if (is_excluded(class_name)) { return; }
+    
+    // skip a line if there has been a report at the current depth
+    if (been_function_at_depth || been_value_at_depth) { debug_indented_line(); }
+    
+    report_function(START, class_name, function_name);
+    increment_depth();
+
+    return;
+}
+
+// print debug info at the end of a function
+void epilogue(const string& class_name, const string& function_name) {
+    
+    if (!debug) { return; }
+    if (is_excluded(class_name)) { return; }
+    
+    decrement_depth();
+    report_function(END, class_name, function_name);
+    
+    return;
+}
+
+// debug info in the body of a function
+void interlude_int(const string& value_name, const int value) {
+    
+    if (!debug) { return; }
+
+    // skip a line if needed
+    if (been_function_at_depth && !been_value_at_depth) { debug_indented_line(); }
+
+    // make a string out of the value
+    stringstream value_stream;
+    value_stream << value;
+    string value_string = value_stream.str();
+
+    stay_at_depth();
+    report_value(value_name, value_string);
+    return;
+}
+
+// debug info in the body of a function
+void interlude_string(const string& value_name, const string& value) {
+    
+    if (!debug) { return; }
+
+    // skip a line if needed
+    if (been_function_at_depth && !been_value_at_depth) { debug_indented_line(); }
+
+    // make a string out of the value
+    stringstream value_stream;
+    value_stream << value;
+    string value_string = value_stream.str();
+
+    stay_at_depth();
+    report_value(value_name, value_string);
+    return;
+}
+
+// increments current depth
+void increment_depth() {
+    stack_depth++;
+    been_function_at_depth = false;
+    been_value_at_depth = false;
+}
+
+// flags that something was reported at this depth
+void stay_at_depth() {
+    been_value_at_depth = true;
+}
+
+// decrements current depth
+void decrement_depth() {
+    stack_depth--;
+    been_function_at_depth = true;
+    been_value_at_depth = false;
+}
+
+// returns true if the current class name is excluded from debugging
+bool is_excluded(const string& class_name) {
+    for(int i = 0; i < NUM_EXCLUDED_CLASSES; i++) {
+        if (class_name == EXCLUDED_CLASSES[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// toggle debugging on/off
+void toggle_debug() {
+    if (debug) {
+        debug = false;
+        return;
+    }
+    debug = true;
+    return;
+}
+
+// builds a string of n tokens
+string build_string(const string& token, const int n) {
+    string return_string;
+    for (int i = 0; i < n; i++) {
+        return_string += token;
+    }
+    return return_string;
+}
+
+// returns the indent buffer
+string indent_buffer() {
+    return build_string(INDENT_TOKEN, stack_depth);
+}
+
+// returns the alignment buffer
+string alignment_buffer(const int num_chars_already_printed) {
+    int buffer_length = (ALIGN_BUFFER_SIZE - (stack_depth * INDENT_TOKEN.size()) - num_chars_already_printed);
+    return build_string(ALIGN_BUFFER_CHAR, buffer_length);
+}
+
+// prints debug messages
+void debug_print(const string& message, bool indented, bool aligned, const string start_token) {
+    
     cerr << DEBUG_MARKER;
     
-    // indent
-    for (int i = 0; i < REPORT_DEPTH; i++) {
-        cerr << INDENT_CHARACTER;
+    if (indented) {
+        cerr << indent_buffer();
     }
     
-    // if there the line start token is not empty, then print it with a buffer
-    if (line_start != "") {
-        
-        // print the token
-        cerr << line_start;
-        
-        // print the character buffer
-        for(int i = 0; i < (BUFFER_SIZE - REPORT_DEPTH - line_start.size()); i++) {
-            cerr << BUFFER_CHARACTER;
-        }
-        
-        // print a space
-        cerr << " ";
+    if (indented && aligned) {
+        cerr << start_token;
+        cerr << alignment_buffer(start_token.size());
+        cerr << SPACE;
     }
     
-    // print the label if it's not empty
-    if (label != "") {
-        cerr << label << " ";
-    }
-    
-    // print the message if it's not empty
-    if (label != "") {
-        cerr << message;
-    }
-    
-    // end the report
-    cerr << endl;
+    cerr << message << endl;
+    return;
+}
+
+// prints an indented line
+void debug_indented_line() {
+    debug_print("", true);
+    return;
+}
+
+// prints an empty line
+void debug_empty_line() {
+    debug_print();
     return;
 }
