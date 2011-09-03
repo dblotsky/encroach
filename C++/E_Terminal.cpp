@@ -1,18 +1,20 @@
 #include <iostream>
 #include <string>
 #include <cassert>
+#include <exception>
 
 #include "E_Reporter.h"
 
 #include "E_Terminal.h"
+#include "E_Command.h"
+#include "E_Controller.h"
+#include "E_Model.h"
 
 using std::string;
 using std::cout;
 using std::cerr;
 using std::cin;
 using std::endl;
-
-enum Command {QUIT, PRINT, EMPTY, SWITCH_REPORTING, INVALID};
 
 E_Terminal::E_Terminal(E_Model* model, E_Controller* controller, int argc, char* argv[]): E_View(model, controller) {
     prologue("E_Terminal");
@@ -27,10 +29,10 @@ E_Terminal::~E_Terminal() {
 void E_Terminal::run() {
     prologue("E_Terminal", "run");
     
-    // char array, string, and enum variable to store entered command
+    // char array, string, and E_Command to store entered command
     char raw_command[256];
     string command_string = "";
-    Command command;
+    E_Command command;
     
     // exit flag
     bool exited = false;
@@ -43,25 +45,13 @@ void E_Terminal::run() {
         // process input
         cin.getline(raw_command, 256);
         command_string = raw_command;
+        command.process(command_string);
         
         // report command string
-        report_variable<string>("command_string", command_string);
-        
-        // determine command
-        if (command_string == "q" || command_string == "quit" || command_string == "exit") {
-            command = QUIT;
-        } else if (command_string == "p" || command_string == "print" || command_string == "d" || command_string == "display") {
-            command = PRINT;
-        } else if (command_string.length() == 0) {
-            command = EMPTY;
-        } else if (command_string == "debug" || command_string == "DEBUG" || command_string == "dbg" || command_string == "DBG") {
-            command = SWITCH_REPORTING;
-        } else {
-            command = INVALID;
-        }
+        interlude_string("command.str()", command.str());
         
         // act on command
-        switch (command) {
+        switch (command.get_type()) {
             case QUIT:
                 exited = true;
                 break;
@@ -73,16 +63,21 @@ void E_Terminal::run() {
             case EMPTY:
                 break;
                 
-            case SWITCH_REPORTING:
-                switch_reporting();
+            case DEBUG:
+                toggle_debug();
+                break;
+            
+            case MOVE:
+                controller->event_move(command.str());
+                print_board();
                 break;
                 
             case INVALID:
-                cout << "Invalid command: " << QUOTE << command_string << QUOTE << "." << endl;
+                cout << "Invalid command: " << QUOTE << command.str() << QUOTE << "." << endl;
                 break;
                 
             default:
-                cerr << endl << "Caught an enum value for which a case does not exist!" << endl;
+                cerr << endl << "Got an enum value for which a case does not exist." << endl;
                 assert(false);
                 break;
         }
@@ -108,6 +103,10 @@ void E_Terminal::print_board() {
 }
 
 void E_Terminal::print_prompt() {
+    // prologue("E_Terminal", "print_prompt");
+    
     cout << "--> ";
+    
+    // prologue("E_Terminal", "print_prompt");
     return;
 }

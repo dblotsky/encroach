@@ -6,9 +6,11 @@ CXXFLAGS    = -Wall -O -g -MMD
 
 # objects
 VIEW_OBJS   = E_Observer.o E_View.o E_Terminal.o
-MODL_OBJS   = E_Subject.o E_Model.o E_Node.o E_Color.o
-CTRL_OBJS   = E_Controller.o
+CTRL_OBJS   = E_Controller.o E_Command.o
 FNCN_OBJS   = main.o E_Reporter.o
+PLAY_OBJS 	= E_Owner.o E_Neutral.o E_Player.o
+BORD_OBJS 	= E_Node.o E_Color.o
+MODL_OBJS   = E_Subject.o E_Model.o $(BORD_OBJS) $(PLAY_OBJS)
 OBJECTS     = $(FNCN_OBJS) $(VIEW_OBJS) $(MODL_OBJS) $(CTRL_OBJS)
 
 # outputs

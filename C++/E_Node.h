@@ -7,7 +7,7 @@ class E_Node {
     public:
         E_Node();
         ~E_Node();
-        E_Color get_color();
+        E_Color get_color() const;
         void set_color(E_Color color);
         
     private:

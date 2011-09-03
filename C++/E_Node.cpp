@@ -13,7 +13,7 @@ E_Node::~E_Node(){
     epilogue("E_Node", "~E_Node");
 }
 
-E_Color E_Node::get_color() {
+E_Color E_Node::get_color() const {
     prologue("E_Node", "get_color");
     epilogue("E_Node", "get_color");
     return color;
