@@ -1,5 +1,5 @@
 #! /bin/bash
 
-make clean
-make
-make neat
+../make clean
+../make
+../make neat
