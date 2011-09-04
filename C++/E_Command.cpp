@@ -1,8 +1,6 @@
 #include <string>
 #include <cctype>
-
 #include "E_Reporter.h"
-
 #include "E_Command.h"
 
 using std::string;
@@ -84,6 +82,6 @@ bool E_Command::is_a_digit(const string& command_string) const {
     
     bool return_value = (command_string.size() == 1 && isdigit(command_string.at(0)));
     
-    prologue("E_Command", "epilogue");
+    epilogue("E_Command", "is_a_digit");
     return return_value;
 }

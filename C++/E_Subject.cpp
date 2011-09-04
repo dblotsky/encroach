@@ -1,7 +1,5 @@
 #include <set>
-
 #include "E_Reporter.h"
-
 #include "E_Subject.h"
 #include "E_Observer.h"
 

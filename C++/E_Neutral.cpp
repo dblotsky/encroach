@@ -1,5 +1,4 @@
 #include "E_Reporter.h"
-
 #include "E_Neutral.h"
 
 E_Neutral::E_Neutral() {

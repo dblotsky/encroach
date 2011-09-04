@@ -1,5 +1,4 @@
 #include "E_Reporter.h"
-
 #include "E_Model.h"
 #include "E_Controller.h"
 #include "E_View.h"

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 #include <cassert>
-
 #include "E_Reporter.h"
 
 using std::string;
@@ -37,8 +36,8 @@ static int  stack_depth = 0;
 static bool debug = true;
 
 // globals
-static bool been_function_at_depth = false;
-static bool been_value_at_depth = false;
+static bool been_function_at_depth  = false;
+static bool been_value_at_depth     = false;
 
 void report_value(const string& value_name, const string& value) {
     string report_string = QUOTE + value_name + QUOTE + ": " + QUOTE + value + QUOTE;

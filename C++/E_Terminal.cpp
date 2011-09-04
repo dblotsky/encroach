@@ -1,14 +1,12 @@
 #include <iostream>
 #include <string>
 #include <cassert>
-#include <exception>
-
 #include "E_Reporter.h"
-
 #include "E_Terminal.h"
 #include "E_Command.h"
 #include "E_Controller.h"
 #include "E_Model.h"
+#include "E_Exception.h"
 
 using std::string;
 using std::cout;
@@ -77,6 +75,7 @@ void E_Terminal::run() {
                 break;
                 
             default:
+                // throw unhandled_enum_value;
                 cerr << endl << "Got an enum value for which a case does not exist." << endl;
                 assert(false);
                 break;
@@ -96,7 +95,9 @@ void E_Terminal::update() {
 void E_Terminal::print_board() {
     prologue("E_Terminal", "print_board");
     
-    cout << "0 0 0\n0 0 0\n0 0 0\n";
+    cout << "+---+" << endl;
+    cout << "| 0 |" << endl;
+    cout << "+---+" << endl;
     
     epilogue("E_Terminal", "print_board");
     return;

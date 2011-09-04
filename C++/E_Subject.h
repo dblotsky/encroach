@@ -2,7 +2,6 @@
 #define _E_SUBJECT_
 
 #include <set>
-
 #include "E_Observer.h"
 
 using std::set;
