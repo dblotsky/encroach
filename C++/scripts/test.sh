@@ -1,3 +1,3 @@
 #! /bin/bash
 
-../encroach.out < input.txt > output.txt
+./encroach.out < scripts/input.txt > scripts/output.txt
