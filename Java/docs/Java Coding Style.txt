@@ -24,7 +24,7 @@ Formatting
 - put the open brace on the same line as the beginning of the block (above example)
 - put the closing brace on its own line:
     
-    if(condition) {
+    if (condition) {
         do_some_stuff();
     }
 
@@ -50,11 +50,11 @@ Formatting
     
     try { 
         do_a_short_thing();
-    } catch(Exception e) {
+    } catch (Exception e) {
         // do nothing
     }
     
     | | | | | |
     V V V V V V
 
-    try { do_a_single_line_thing(); } catch(Exception e) {}
+    try { do_a_single_line_thing(); } catch (Exception e) {}
