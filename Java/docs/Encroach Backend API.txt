@@ -60,4 +60,3 @@ ESquare:
     
     // member variables
     Boolean     border
-
