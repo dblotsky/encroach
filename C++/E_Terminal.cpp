@@ -95,9 +95,13 @@ void E_Terminal::update() {
 void E_Terminal::print_board() {
     prologue("E_Terminal", "print_board");
     
+    cout << model->get_board_string() << endl;
+    
+    /*
     cout << "+---+" << endl;
     cout << "| 0 |" << endl;
     cout << "+---+" << endl;
+    */
     
     epilogue("E_Terminal", "print_board");
     return;
