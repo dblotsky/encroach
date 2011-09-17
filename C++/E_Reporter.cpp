@@ -13,8 +13,8 @@ const string PRCD_START_LABEL   = "   ";
 const string PRCD_END_LABEL     = "   ";
 const string MTHD_START_LABEL   = "   ";
 const string MTHD_END_LABEL     = "   ";
-const string CNST_START_LABEL   = "[ ]";
-const string CNST_END_LABEL     = "[+]";
+const string CSTR_START_LABEL   = "[ ]";
+const string CSTR_END_LABEL     = "[+]";
 const string DSTR_START_LABEL   = "[ ]";
 const string DSTR_END_LABEL     = "[-]";
 
@@ -29,7 +29,7 @@ const string END_CHAR           = "\\";
 
 // report exclusions
 const int    NUM_EXCLUDED_CLASSES = 1;
-const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {};
+const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {"E_Command"};
 
 // statics
 static int  stack_depth = 0;
@@ -46,30 +46,33 @@ void report_value(const string& value_name, const string& value) {
 
 void report_function(const ReportStage stage, const string& class_name, const string& function_name) {
 
-    // determine the label and the message
+    // determine the label and the message from the class name and function name
     string label;
     string message;
+    switch(get_function_type(class_name, function_name)) {
+        case PROCEDURE:
+            message = QUOTE + function_name + QUOTE;
+            label   = start_or_end(stage, PRCD_START_LABEL, PRCD_END_LABEL);
+            break;
 
-    FunctionType function_type = determine_function_type(class_name, function_name);
-    if (function_type == PROCEDURE) {
-        message = QUOTE + function_name + QUOTE;
-        label   = start_or_end(stage, PRCD_START_LABEL, PRCD_END_LABEL);
+        case METHOD:
+            message = QUOTE + function_name + QUOTE + " on " + QUOTE + class_name + QUOTE;
+            label   = start_or_end(stage, MTHD_START_LABEL, MTHD_END_LABEL);
+            break;
 
-    } else if (function_type == METHOD) {
-        message = QUOTE + function_name + QUOTE + " on " + QUOTE + class_name + QUOTE;
-        label   = start_or_end(stage, MTHD_START_LABEL, MTHD_END_LABEL);
+        case CONSTRUCTOR:
+            message = QUOTE + class_name + QUOTE;
+            label   = start_or_end(stage, CSTR_START_LABEL, CSTR_END_LABEL);
+            break;
 
-    } else if (function_type == CONSTRUCTOR) {
-        message = QUOTE + class_name + QUOTE;
-        label   = start_or_end(stage, CNST_START_LABEL, CNST_END_LABEL);
+        case DESTRUCTOR:
+            message = QUOTE + class_name + QUOTE;
+            label   = start_or_end(stage, DSTR_START_LABEL, DSTR_END_LABEL);
+            break;
 
-    } else if (function_type == DESTRUCTOR) {
-        message = QUOTE + class_name + QUOTE;
-        label   = start_or_end(stage, DSTR_START_LABEL, DSTR_END_LABEL);
-
-    } else {
-        cerr << "Got function type for which there is no case." << endl;
-        assert(false);
+        default:
+            cerr << "Got function type for which there is no case." << endl;
+            assert(false);
     }
 
     string report_string = label + SPACE + message;
@@ -86,13 +89,13 @@ string start_or_end(ReportStage stage, const string& start_string, const string&
     } else if (stage == END) {
         return end_string;
     } else {
-        cerr << "Got an invalid enum value: " << QUOTE << stage << QUOTE << "." << endl;
+        cerr << "Got an invalid enum value for ReportStage: " << QUOTE << stage << QUOTE << "." << endl;
         assert(false);
     }
 }
 
 // returns a type of function based on passed class name and function name
-FunctionType determine_function_type(const string& class_name, const string& function_name) {
+FunctionType get_function_type(const string& class_name, const string& function_name) {
     
     // class name and function name must not both be empty
     assert(!(class_name == "" && function_name == ""));
@@ -125,7 +128,7 @@ void prologue(const string& class_name, const string& function_name) {
     if (is_excluded(class_name)) { return; }
     
     // skip a line if there has been a report at the current depth
-    if (been_function_at_depth || been_value_at_depth) { debug_indented_line(); }
+    if (been_function_at_depth || been_value_at_depth) { debug_indent_line(); }
     
     report_function(START, class_name, function_name);
     increment_depth();
@@ -151,7 +154,7 @@ void interlude_int(const string& value_name, const int value) {
     if (!debug) { return; }
 
     // skip a line if needed
-    if (been_function_at_depth && !been_value_at_depth) { debug_indented_line(); }
+    if (been_function_at_depth && !been_value_at_depth) { debug_indent_line(); }
 
     // make a string out of the value
     stringstream value_stream;
@@ -169,7 +172,7 @@ void interlude_string(const string& value_name, const string& value) {
     if (!debug) { return; }
 
     // skip a line if needed
-    if (been_function_at_depth && !been_value_at_depth) { debug_indented_line(); }
+    if (been_function_at_depth && !been_value_at_depth) { debug_indent_line(); }
 
     // make a string out of the value
     stringstream value_stream;
@@ -260,7 +263,7 @@ void debug_print(const string& message, bool indented, bool aligned, const strin
 }
 
 // prints an indented line
-void debug_indented_line() {
+void debug_indent_line() {
     debug_print("", true);
     return;
 }

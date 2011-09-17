@@ -28,7 +28,7 @@ void toggle_debug();
 void report_value(const string& value_name, const string& value);
 void report_function(const ReportStage stage, const string& class_name, const string& function_name);
 string start_or_end(ReportStage stage, const string& start_string, const string& end_string);
-FunctionType determine_function_type(const string& class_name, const string& function_name);
+FunctionType get_function_type(const string& class_name, const string& function_name);
 void increment_depth();
 void decrement_depth();
 void stay_at_depth();
@@ -37,7 +37,7 @@ string build_string(const string& token, const int n);
 string indent_buffer();
 string alignment_buffer(const int num_already_printed = 0);
 void debug_print(const string& message = "", bool indented = false, bool aligned = false, const string start_token = "");
-void debug_indented_line();
+void debug_indent_line();
 void debug_empty_line();
 
 #endif
