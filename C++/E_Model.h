@@ -2,16 +2,19 @@
 #define _E_MODEL_
 
 #include <vector>
+#include <string>
 #include "E_Subject.h"
 #include "E_Board.h"
 #include "E_Player.h"
 
 using std::vector;
+using std::string;
 
 class E_Model : public E_Subject {
     public:
         E_Model();
         ~E_Model();
+        string get_board_string() const;
         
     private:
         E_Board* board;
