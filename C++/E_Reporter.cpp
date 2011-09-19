@@ -17,25 +17,20 @@ const string CSTR_START_LABEL   = "[ ]";
 const string CSTR_END_LABEL     = "[+]";
 const string DSTR_START_LABEL   = "[ ]";
 const string DSTR_END_LABEL     = "[-]";
-
 const string DEBUG_MARKER       = "DEBUG: ";
 const string INDENT_TOKEN       = "| ";
-
 const int    ALIGN_BUFFER_SIZE  = 16;
 const string ALIGN_BUFFER_CHAR  = "-";
-
 const string START_CHAR         = "+";
 const string END_CHAR           = "\\";
 
 // report exclusions
-const int    NUM_EXCLUDED_CLASSES = 1;
-const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {"E_Command"};
+const int    NUM_EXCLUDED_CLASSES = 2;
+const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {"E_Command", "E_Node"};
 
 // statics
 static int  stack_depth = 0;
-static bool debug = true;
-
-// globals
+static bool debug = false;
 static bool been_function_at_depth  = false;
 static bool been_value_at_depth     = false;
 
@@ -45,39 +40,42 @@ void report_value(const string& value_name, const string& value) {
 }
 
 void report_function(const ReportStage stage, const string& class_name, const string& function_name) {
-
-    // determine the label and the message from the class name and function name
-    string label;
-    string message;
+    
+    string start_label, end_label, message;
+    
+    // get proper message, start label, and end label
     switch(get_function_type(class_name, function_name)) {
         case PROCEDURE:
-            message = QUOTE + function_name + QUOTE;
-            label   = start_or_end(stage, PRCD_START_LABEL, PRCD_END_LABEL);
+            message     = QUOTE + function_name + QUOTE;
+            start_label = PRCD_START_LABEL;
+            end_label   = PRCD_END_LABEL;
             break;
-
         case METHOD:
-            message = QUOTE + function_name + QUOTE + " on " + QUOTE + class_name + QUOTE;
-            label   = start_or_end(stage, MTHD_START_LABEL, MTHD_END_LABEL);
+            message     = QUOTE + function_name + QUOTE + " on " + QUOTE + class_name + QUOTE;
+            start_label = MTHD_START_LABEL;
+            end_label   = MTHD_END_LABEL;
             break;
-
         case CONSTRUCTOR:
-            message = QUOTE + class_name + QUOTE;
-            label   = start_or_end(stage, CSTR_START_LABEL, CSTR_END_LABEL);
+            message     = QUOTE + class_name + QUOTE;
+            start_label = CSTR_START_LABEL;
+            end_label   = CSTR_END_LABEL;
             break;
-
         case DESTRUCTOR:
-            message = QUOTE + class_name + QUOTE;
-            label   = start_or_end(stage, DSTR_START_LABEL, DSTR_END_LABEL);
+            message     = QUOTE + class_name + QUOTE;
+            start_label = DSTR_START_LABEL;
+            end_label   = DSTR_END_LABEL;
             break;
-
         default:
             cerr << "Got function type for which there is no case." << endl;
             assert(false);
     }
-
-    string report_string = label + SPACE + message;
-    string start_token   = start_or_end(stage, START_CHAR, END_CHAR);
-
+    
+    // compose report 
+    string label            = start_or_end(stage, start_label, end_label);
+    string start_token      = start_or_end(stage, START_CHAR, END_CHAR);
+    string report_string    = label + SPACE + message;
+    
+    // print report
     debug_print(report_string, true, true, start_token);
     return;
 }
@@ -121,7 +119,7 @@ FunctionType get_function_type(const string& class_name, const string& function_
     }
 }
 
-// print debug info at the beginning of a function
+// prints debug info at the beginning of a function
 void prologue(const string& class_name, const string& function_name) {
     
     if (!debug) { return; }
@@ -136,7 +134,7 @@ void prologue(const string& class_name, const string& function_name) {
     return;
 }
 
-// print debug info at the end of a function
+// prints debug info at the end of a function
 void epilogue(const string& class_name, const string& function_name) {
     
     if (!debug) { return; }
@@ -148,8 +146,8 @@ void epilogue(const string& class_name, const string& function_name) {
     return;
 }
 
-// debug info in the body of a function
-void interlude_int(const string& value_name, const int value) {
+// prints debug info in the body of a function
+void interlude(const string& name, const void* value, PointerType type) {
     
     if (!debug) { return; }
 
@@ -158,29 +156,37 @@ void interlude_int(const string& value_name, const int value) {
 
     // make a string out of the value
     stringstream value_stream;
-    value_stream << value;
+    switch (type) {
+        case INT:
+            value_stream << *(int*) value;
+            break;
+        case LONG_INT:
+            value_stream << *(long int*) value;
+            break;
+        case LONG:
+            value_stream << *(long*) value;
+            break;
+        case LONG_LONG:
+            value_stream << *(long long*) value;
+            break;
+        case STRING:
+            value_stream << *(string*) value;
+            break;
+        case CHAR:
+            value_stream << *(char*) value;
+            break;
+        case VOID:
+            value_stream << value;
+            break;
+        default:
+            cerr << "Got an enum value for which a case does not exist." << endl;
+            assert(false);
+    }
     string value_string = value_stream.str();
 
     stay_at_depth();
-    report_value(value_name, value_string);
-    return;
-}
-
-// debug info in the body of a function
-void interlude_string(const string& value_name, const string& value) {
+    report_value(name, value_string);
     
-    if (!debug) { return; }
-
-    // skip a line if needed
-    if (been_function_at_depth && !been_value_at_depth) { debug_indent_line(); }
-
-    // make a string out of the value
-    stringstream value_stream;
-    value_stream << value;
-    string value_string = value_stream.str();
-
-    stay_at_depth();
-    report_value(value_name, value_string);
     return;
 }
 
@@ -213,13 +219,25 @@ bool is_excluded(const string& class_name) {
     return false;
 }
 
-// toggle debugging on/off
+// toggles debugging on/off
 void toggle_debug() {
     if (debug) {
         debug = false;
         return;
     }
     debug = true;
+    return;
+}
+
+// turns debugging on
+void on_debug() {
+    debug = true;
+    return;
+}
+
+// turns debugging off
+void off_debug() {
+    debug = false;
     return;
 }
 

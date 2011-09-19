@@ -10,6 +10,7 @@ using std::string;
 // enums
 enum FunctionType {CONSTRUCTOR, DESTRUCTOR, METHOD, PROCEDURE};
 enum ReportStage {START, END};
+enum PointerType {INT, LONG_INT, LONG, LONG_LONG, STRING, CHAR, VOID};
 
 // constants
 const string QUOTE = "\"";
@@ -18,9 +19,10 @@ const string SPACE = " ";
 // public
 void prologue(const string& class_name = "", const string& function_name = "");
 void epilogue(const string& class_name = "", const string& function_name = "");
-void interlude_int(const string& value_name, const int value);
-void interlude_string(const string& value_name, const string& value);
+void interlude(const string& name, const void* value, PointerType type=VOID);
 void toggle_debug();
+void on_debug();
+void off_debug();
 
 // private
 // static int REPORT_DEPTH = 0;
