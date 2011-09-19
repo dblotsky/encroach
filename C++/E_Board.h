@@ -9,7 +9,7 @@
 
 class E_Board {
     public:
-        E_Board(int x_size=DEFAULT_X_SIZE, int y_size=DEFAULT_Y_SIZE);
+        E_Board(int width=DEFAULT_X_SIZE, int height=DEFAULT_Y_SIZE);
         ~E_Board();
         int get_x_size() const;
         int get_y_size() const;
@@ -18,7 +18,7 @@ class E_Board {
     private:
         int x_size;
         int y_size;
-        E_Node* node_list[];
+        E_Node** node_list;
         
 };
 
