@@ -15,6 +15,7 @@ class E_Terminal: public E_View {
     private:
         void print_board();
         void print_prompt();
+        void print_color(E_Color color);
         
 };
 
