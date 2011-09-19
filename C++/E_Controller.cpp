@@ -1,3 +1,4 @@
+#include <cassert>
 #include "E_Reporter.h"
 #include "E_Controller.h"
 #include "E_Model.h"
@@ -17,6 +18,13 @@ E_Controller::~E_Controller() {
 
 void E_Controller::new_ai_game(const string& player_name) {
     prologue("E_Controller", "new_ai_game");
+    
+    if (model->game_exists()) {
+        assert(false);
+    }
+    
+    model->start_game();
+    
     epilogue("E_Controller", "new_ai_game");
 }
 
@@ -27,5 +35,10 @@ void E_Controller::new_human_game(const string& player1_name, const string& play
 
 void E_Controller::event_move(const string& command_string) {
     prologue("E_Controller", "event_move");
+    
+    if (!model->game_exists()) {
+        assert(false);
+    }
+    
     epilogue("E_Controller", "event_move");
 }

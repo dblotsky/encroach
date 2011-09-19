@@ -1,6 +1,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <cassert>
 #include "E_Reporter.h"
 #include "E_Model.h"
 #include "E_Board.h"
@@ -26,24 +27,54 @@ E_Model::~E_Model() {
     epilogue("E_Model", "~E_Model");
 }
 
-string E_Model::get_board_string() const {
-    prologue("E_Model", "get_board_string");
+void E_Model::start_game() {
+    prologue("E_Model", "start_game");
     
-    // output accumulator
-    stringstream accumulator;
+    board = new E_Board();
     
-    // get bounds
-    int x_bound = board->get_x_size();
-    int y_bound = board->get_y_size();
+    epilogue("E_Model", "start_game");
+    return;
+}
+
+void E_Model::end_game() {
+    prologue("E_Model", "end_game");
     
-    // accumulate nodes
-    for (int x = 0; x < x_bound; x++) {
-        for (int y = 0; y < y_bound; y++) {
-            accumulator << board->get_node_at(x, y)->get_color() << " ";
-        }
-        accumulator << std::endl;
+    delete board;
+    
+    epilogue("E_Model", "end_game");
+    return;
+}
+
+E_Color E_Model::get_node_color(int x, int y) const {
+    prologue("E_Model", "get_node_color");
+    
+    E_Color return_value = board->get_node_at(x, y)->get_color();
+    
+    epilogue("E_Model", "get_node_color");
+    return return_value;
+}
+
+int E_Model::get_board_x_size() const {
+    prologue("E_Model", "get_board_x_size");
+    
+    int return_value = board->get_x_size();
+    
+    epilogue("E_Model", "get_board_x_size");
+    return return_value;
+}
+
+int E_Model::get_board_y_size() const {
+    prologue("E_Model", "get_board_y_size");
+    
+    int return_value = board->get_y_size();
+    
+    epilogue("E_Model", "get_board_y_size");
+    return return_value;
+}
+
+bool E_Model::game_exists() const {
+    if (board == NULL) {  
+        return false; 
     }
-    
-    epilogue("E_Model", "get_board_string");
-    return accumulator.str();
+    return true;
 }

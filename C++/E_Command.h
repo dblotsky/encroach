@@ -5,7 +5,7 @@
 
 using std::string;
 
-enum CommandType {QUIT, PRINT, EMPTY, DEBUG, MOVE, INVALID};
+enum CommandType {QUIT, PRINT, EMPTY, DEBUG, MOVE, AI_GAME, INVALID};
 
 class E_Command {
     public:
