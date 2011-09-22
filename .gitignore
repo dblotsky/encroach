@@ -5,3 +5,5 @@
 *.orig
 *.o
 *.d
+*.exe
+output.txt
