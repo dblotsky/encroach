@@ -30,7 +30,7 @@ E_Board::E_Board(int width, int height) {
     // construct the nodes
     for(int x = 0; x < this->x_size; x++) {
         for(int y = 0; y < this->y_size; y++) {
-            this->node_list[(x * (this->y_size)) + y] = new E_Node(BLUE);
+            this->node_list[(x * (this->y_size)) + y] = new E_Node();
         }
     }
     
@@ -40,9 +40,10 @@ E_Board::E_Board(int width, int height) {
 E_Board::~E_Board() {
     prologue("E_Board", "~E_Board");
     
+    // destroy the nodes
     for(int x = 0; x < this->x_size; x++) {
         for(int y = 0; y < this->y_size; y++) {
-            delete node_list[(x * (this->y_size)) + y];
+            delete this->node_list[(x * (this->y_size)) + y];
         }
     }
     
