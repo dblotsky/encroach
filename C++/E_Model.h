@@ -18,7 +18,7 @@ class E_Model : public E_Subject {
         ~E_Model();
         friend class E_Controller;
         
-        E_Color get_node_color(int x, int y) const;
+        E_Color get_color_at(int x, int y) const;
         int get_board_x_size() const;
         int get_board_y_size() const;
         bool game_exists() const;
@@ -28,6 +28,7 @@ class E_Model : public E_Subject {
         vector<E_Player*> players;
         void start_game();
         void end_game();
+        
 };
 
 #endif

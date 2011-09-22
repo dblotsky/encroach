@@ -151,7 +151,7 @@ void E_Terminal::print_board() {
     for (int x = 0; x < x_size; x++) {
         cout << "| ";
         for (int y = 0; y < y_size; y++) {
-            print_color(model->get_node_color(x, y));
+            print_color(model->get_color_at(x, y));
         }
         cout << "|" << endl;
     }
@@ -162,21 +162,15 @@ void E_Terminal::print_board() {
     }
     cout << "+" << endl;
     
-    /*
-    cout << "+---+" << endl;
-    cout << "| 0 |" << endl;
-    cout << "+---+" << endl;
-    */
-    
     epilogue("E_Terminal", "print_board");
     return;
 }
 
 void E_Terminal::print_prompt() {
-    // prologue("E_Terminal", "print_prompt");
+    prologue("E_Terminal", "print_prompt");
     
     cout << "--> ";
     
-    // epilogue("E_Terminal", "print_prompt");
+    epilogue("E_Terminal", "print_prompt");
     return;
 }

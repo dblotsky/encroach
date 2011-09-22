@@ -1,11 +1,6 @@
-#include <vector>
-#include <sstream>
-#include <iostream>
-#include <cassert>
 #include "E_Reporter.h"
 #include "E_Model.h"
 #include "E_Board.h"
-#include "E_Player.h"
 
 using std::vector;
 using std::string;
@@ -45,12 +40,12 @@ void E_Model::end_game() {
     return;
 }
 
-E_Color E_Model::get_node_color(int x, int y) const {
-    prologue("E_Model", "get_node_color");
+E_Color E_Model::get_color_at(int x, int y) const {
+    prologue("E_Model", "get_color_at");
     
     E_Color return_value = board->get_node_at(x, y)->get_color();
     
-    epilogue("E_Model", "get_node_color");
+    epilogue("E_Model", "get_color_at");
     return return_value;
 }
 
