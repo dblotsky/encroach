@@ -8,9 +8,9 @@ using std::string;
 // TODO: make this a singleton class
 
 // enums
-enum FunctionType {CONSTRUCTOR, DESTRUCTOR, METHOD, PROCEDURE};
-enum ReportStage {START, END};
-enum PointerType {INT, LONG_INT, LONG, LONG_LONG, STRING, CHAR, VOID};
+enum FunctionType   {CONSTRUCTOR, DESTRUCTOR, METHOD, PROCEDURE};
+enum ReportStage    {START, END};
+enum PointerType    {INT, LONG_INT, LONG, LONG_LONG, STRING, CHAR, VOID};
 
 // constants
 const string QUOTE = "\"";
@@ -34,7 +34,7 @@ FunctionType get_function_type(const string& class_name, const string& function_
 void increment_depth();
 void decrement_depth();
 void stay_at_depth();
-bool is_excluded(const string& class_name);
+bool is_excluded(const string& class_name, const string& method_name);
 string build_string(const string& token, const int n);
 string indent_buffer();
 string alignment_buffer(const int num_already_printed = 0);

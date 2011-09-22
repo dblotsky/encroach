@@ -25,8 +25,18 @@ const string START_CHAR         = "+";
 const string END_CHAR           = "\\";
 
 // report exclusions
-const int    NUM_EXCLUDED_CLASSES = 2;
-const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {"E_Command", "E_Node"};
+const int    NUM_EXCLUDED_CLASSES = 1;
+const int    NUM_EXCLUDED_METHODS = 5;
+const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {
+    "E_Command"
+};
+const string EXCLUDED_METHODS[NUM_EXCLUDED_METHODS] = {
+    "print_prompt", 
+    "get_color", 
+    "get_color_at", 
+    "print_color", 
+    "get_node_at"
+};
 
 // statics
 static int  stack_depth = 0;
@@ -123,7 +133,7 @@ FunctionType get_function_type(const string& class_name, const string& function_
 void prologue(const string& class_name, const string& function_name) {
     
     if (!debug) { return; }
-    if (is_excluded(class_name)) { return; }
+    if (is_excluded(class_name, function_name)) { return; }
     
     // skip a line if there has been a report at the current depth
     if (been_function_at_depth || been_value_at_depth) { debug_indent_line(); }
@@ -138,7 +148,7 @@ void prologue(const string& class_name, const string& function_name) {
 void epilogue(const string& class_name, const string& function_name) {
     
     if (!debug) { return; }
-    if (is_excluded(class_name)) { return; }
+    if (is_excluded(class_name, function_name)) { return; }
     
     decrement_depth();
     report_function(END, class_name, function_name);
@@ -209,10 +219,15 @@ void decrement_depth() {
     been_value_at_depth = false;
 }
 
-// returns true if the current class name is excluded from debugging
-bool is_excluded(const string& class_name) {
+// returns true if the current class or function name is excluded from debugging
+bool is_excluded(const string& class_name, const string& method_name) {
     for(int i = 0; i < NUM_EXCLUDED_CLASSES; i++) {
         if (class_name == EXCLUDED_CLASSES[i]) {
+            return true;
+        }
+    }
+    for(int i = 0; i < NUM_EXCLUDED_METHODS; i++) {
+        if (method_name == EXCLUDED_METHODS[i]) {
             return true;
         }
     }
