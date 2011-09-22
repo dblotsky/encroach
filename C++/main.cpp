@@ -1,4 +1,5 @@
 #include <string>
+#include <stdlib.h>
 #include "E_Reporter.h"
 #include "E_Model.h"
 #include "E_Controller.h"
@@ -19,6 +20,9 @@ void process_options(int argc, char* argv[]) {
 int main(int argc, char* argv[]) {
     
     process_options(argc, argv);
+    
+    // seed random generator
+    srand(0);
 
     // create a back-end
     E_Model*        model       = new E_Model();
