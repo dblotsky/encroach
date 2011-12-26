@@ -8,14 +8,14 @@ using std::set;
 
 class E_Subject {
     public:
-       void subscribe(E_Observer*);
-       void unsubscribe(E_Observer*);
+        void subscribe(E_Observer*);
+        void unsubscribe(E_Observer*);
         
     protected:
-       void notify();
+        void notify();
         
     private:
-       set<E_Observer*> observers;
+        set<E_Observer*> observers;
         
 };
 

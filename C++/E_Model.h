@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include "E_Subject.h"
-#include "E_Board.h"
+#include "E_Game.h"
 #include "E_Player.h"
 
 using std::vector;
@@ -12,7 +12,7 @@ using std::string;
 
 class E_Controller;
 
-class E_Model : public E_Subject {
+class E_Model: public E_Subject {
     public:
         E_Model();
         ~E_Model();
@@ -21,13 +21,15 @@ class E_Model : public E_Subject {
         E_Color get_color_at(int x, int y) const;
         int get_board_x_size() const;
         int get_board_y_size() const;
-        bool game_exists() const;
         
     private:
-        E_Board* board;
+        E_Game* game;
+        E_Player* ai_player;
         vector<E_Player*> players;
-        void start_game();
-        void end_game();
+        
+        void go();
+        E_Player* get_player(const string& name);
+        void add_player(E_Player* player);
         
 };
 

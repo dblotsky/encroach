@@ -5,10 +5,11 @@
 #include "E_Controller.h"
 #include "E_Model.h"
 
-class E_View : public E_Observer {
+class E_View: public E_Observer {
     public:
         E_View(E_Model*, E_Controller*);
         virtual ~E_View();
+        
         virtual void update();
         
     protected:

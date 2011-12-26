@@ -2,15 +2,17 @@
 #define _E_COMMAND_
 
 #include <string>
+#include "E_Color.h"
 
 using std::string;
 
-enum CommandType {QUIT, PRINT, EMPTY, DEBUG, MOVE, AI_GAME, INVALID};
+enum CommandType {QUIT, PRINT, EMPTY, DEBUG, MOVE, START_AI_GAME, ADD_PLAYER, INVALID};
 
 class E_Command {
     public:
         E_Command();
         virtual ~E_Command();
+        
         void process(const string& command_string);
         CommandType get_type() const;
         const string& str() const;

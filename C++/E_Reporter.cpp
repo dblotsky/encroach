@@ -19,16 +19,16 @@ const string DSTR_START_LABEL   = "[ ]";
 const string DSTR_END_LABEL     = "[-]";
 const string DEBUG_MARKER       = "DEBUG: ";
 const string INDENT_TOKEN       = "| ";
-const int    ALIGN_BUFFER_SIZE  = 16;
+const int    ALIGN_BUFFER_SIZE  = 20;
 const string ALIGN_BUFFER_CHAR  = "-";
 const string START_CHAR         = "+";
 const string END_CHAR           = "\\";
 
 // report exclusions
-const int    NUM_EXCLUDED_CLASSES = 1;
+const int    NUM_EXCLUDED_CLASSES = 2;
 const int    NUM_EXCLUDED_METHODS = 5;
 const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {
-    "E_Command"
+    "E_Command", "E_Color"
 };
 const string EXCLUDED_METHODS[NUM_EXCLUDED_METHODS] = {
     "print_prompt", 
@@ -167,27 +167,35 @@ void interlude(const string& name, const void* value, PointerType type) {
     // make a string out of the value
     stringstream value_stream;
     switch (type) {
+        
         case INT:
             value_stream << *(int*) value;
             break;
+            
         case LONG_INT:
             value_stream << *(long int*) value;
             break;
+            
         case LONG:
             value_stream << *(long*) value;
             break;
+            
         case LONG_LONG:
             value_stream << *(long long*) value;
             break;
+            
         case STRING:
             value_stream << *(string*) value;
             break;
+            
         case CHAR:
             value_stream << *(char*) value;
             break;
+            
         case VOID:
             value_stream << value;
             break;
+            
         default:
             cerr << "Got an enum value for which a case does not exist." << endl;
             assert(false);

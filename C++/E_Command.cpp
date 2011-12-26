@@ -38,25 +38,38 @@ void E_Command::process(const string& command_string) {
     
     if (command_string.length() == 0) {
         type = EMPTY;
+        
     } else if ( command_string == "p" || 
                 command_string == "print" || 
                 command_string == "d" || 
                 command_string == "display") {
         type = PRINT;
+        
     } else if ( command_string == "q" || 
                 command_string == "quit" || 
                 command_string == "exit") {
         type = QUIT;
+        
     } else if ( command_string == "debug" || 
                 command_string == "DEBUG" || 
                 command_string == "dbg" || 
-                command_string == "DBG") {
+                command_string == "DBG" ||
+                command_string == "b") {
         type = DEBUG;
+        
     } else if ( command_string == "ai" ||
-                command_string == "n") {
-        type = AI_GAME;
+                command_string == "n" ||
+                command_string == "new") {
+        type = START_AI_GAME;
+        
+    } else if ( command_string == "add_player" ||
+                command_string == "ap" ||
+                command_string == "player") {
+        type = ADD_PLAYER;
+        
     } else if (is_a_digit(command_string)) {
         type = MOVE;
+        
     } else {
         type = INVALID;
     }

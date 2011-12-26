@@ -4,6 +4,7 @@
 #include "E_Reporter.h"
 #include "E_Terminal.h"
 #include "E_Command.h"
+#include "E_Color.h"
 #include "E_Controller.h"
 #include "E_Model.h"
 #include "E_Exception.h"
@@ -50,40 +51,38 @@ void E_Terminal::run() {
         
         // act on command
         switch (command.get_type()) {
+            
             case QUIT:
                 exited = true;
                 break;
+                
             case PRINT:
-                if (model->game_exists()) {
-                    print_board();
-                } else {
-                    cout << "No board to display - no game in progress." << endl;
-                }
+                update();
                 break;
+                
             case EMPTY:
                 break;
+                
             case DEBUG:
                 toggle_debug();
                 break;
-            case AI_GAME:
-                if (!model->game_exists()) {
-                    controller->new_ai_game("");
-                    print_board();
-                } else {
-                    cout << "Can't make a game while another one exists." << endl;
-                }
+                
+            case START_AI_GAME:
+                controller->new_ai_game("Player 1");
                 break;
+                
+            case ADD_PLAYER:
+                controller->add_player();
+                break;
+                
             case MOVE:
-                if (model->game_exists()) {
-                    controller->event_move(command.str());
-                    print_board();
-                } else {
-                    cout << "Can't make a move - no game in progress." << endl;
-                }
+                controller->make_move(string_to_color(command.str()));
                 break;
+                
             case INVALID:
-                cout << "Invalid command: " << QUOTE << command.str() << QUOTE << "." << endl;
+                cout << "Invalid command: \"" << command.str() << "\"." << endl;
                 break;
+                
             default:
                 // throw unhandled_enum_value;
                 cerr << endl << "Got an enum value for which a case does not exist." << endl;
@@ -98,41 +97,10 @@ void E_Terminal::run() {
 
 void E_Terminal::update() {
     prologue("E_Terminal", "update");
+    
+    print_board();
+    
     epilogue("E_Terminal", "update");
-    return;
-}
-
-void E_Terminal::print_color(E_Color color) {
-    prologue("E_Terminal", "print_color");
-    
-    int color_value = 0;
-    
-    switch (color) {
-        case RED:
-            color_value = 1;
-            break;
-        case BLUE:
-            color_value = 2;
-            break;
-        case GREEN:
-            color_value = 3;
-        case YELLOW:
-            color_value = 4;
-            break;
-        case PURPLE:
-            color_value = 5;
-            break;
-        case BLANK:
-            color_value = 0;
-            break;
-        default:
-            cerr << "Got an unknown color." << endl;
-            assert(false);
-    }
-    
-    cout << color_value << " "; 
-    
-    epilogue("E_Terminal", "print_color");
     return;
 }
 
@@ -142,20 +110,23 @@ void E_Terminal::print_board() {
     int x_size = model->get_board_x_size();
     int y_size = model->get_board_y_size();
     
+    // top border
     cout << "+-";
     for (int i = 0; i < x_size; i++){
         cout << "--";
     }
     cout << "+" << endl;
     
+    // colors
     for (int x = 0; x < x_size; x++) {
         cout << "| ";
         for (int y = 0; y < y_size; y++) {
-            print_color(model->get_color_at(x, y));
+            cout << color_to_int(model->get_color_at(x, y)) << " ";
         }
         cout << "|" << endl;
     }
     
+    // bottom border
     cout << "+-";
     for (int i = 0; i < x_size; i++){
         cout << "--";

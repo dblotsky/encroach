@@ -6,7 +6,7 @@
 class E_Neutral: public E_Owner {
     public:
         E_Neutral();
-        ~E_Neutral();
+        virtual ~E_Neutral();
         
     private:
         

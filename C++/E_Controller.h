@@ -11,10 +11,11 @@ class E_Controller {
         E_Controller(E_Model*);
         ~E_Controller();
         
-        // events
         void new_ai_game(const string& player_name);
-        void new_human_game(const string& player1_name, const string& player2_name);
-        void event_move(const string& command_string);
+        void new_human_game(const string& player_a_name, const string& player_b_name);
+        void make_move(const E_Color color);
+        void add_player(const string& player_name);
+        void add_player();
         
     private:
         E_Model* model;
