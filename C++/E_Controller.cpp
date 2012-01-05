@@ -48,6 +48,11 @@ void E_Controller::new_human_game(const string& player_a_name, const string& pla
 
 void E_Controller::make_move(const E_Color color) {
     prologue("E_Controller", "make_move");
+    
+    if (model->game == NULL) {
+        return;
+    }
+    
     model->game->set_move(color);
     model->go();
     epilogue("E_Controller", "make_move");
