@@ -1,6 +1,6 @@
 #include <string>
 #include <cctype>
-#include <assert>
+#include <cassert>
 #include "E_Reporter.h"
 #include "E_Command.h"
 
