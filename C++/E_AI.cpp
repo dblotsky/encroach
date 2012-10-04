@@ -1,7 +1,7 @@
+#include <string>
 #include "E_Reporter.h"
 #include "E_AI.h"
 #include "E_Color.h"
-#include <string>
 
 using std::string;
 

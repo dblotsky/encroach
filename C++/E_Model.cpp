@@ -11,7 +11,8 @@ using std::stringstream;
 static bool waiting_for_input = false;
 
 // public methods
-E_Model::E_Model() {
+E_Model::E_Model()
+{
     prologue("E_Model");
     
     game = NULL;
@@ -20,7 +21,8 @@ E_Model::E_Model() {
     epilogue("E_Model");
 }
 
-E_Model::~E_Model() {
+E_Model::~E_Model()
+{
     prologue("E_Model", "~E_Model");
     
     delete game;
@@ -35,7 +37,8 @@ E_Model::~E_Model() {
     epilogue("E_Model", "~E_Model");
 }
 
-E_Color E_Model::get_color_at(int x, int y) const {
+E_Color E_Model::get_color_at(int x, int y) const
+{
     prologue("E_Model", "get_color_at");
     
     E_Color return_value = game->get_node_at(x, y)->get_color();
@@ -44,7 +47,8 @@ E_Color E_Model::get_color_at(int x, int y) const {
     return return_value;
 }
 
-int E_Model::get_board_x_size() const {
+int E_Model::get_board_x_size() const
+{
     prologue("E_Model", "get_board_x_size");
     
     int return_value = game->get_x_size();
@@ -53,7 +57,8 @@ int E_Model::get_board_x_size() const {
     return return_value;
 }
 
-int E_Model::get_board_y_size() const {
+int E_Model::get_board_y_size() const
+{
     prologue("E_Model", "get_board_y_size");
     
     int return_value = game->get_y_size();
@@ -63,7 +68,8 @@ int E_Model::get_board_y_size() const {
 }
 
 // private methods
-void E_Model::add_player(E_Player* player) {
+void E_Model::add_player(E_Player* player)
+{
     prologue("E_Model", "add_player");
     
     interlude("player->get_name()", &(player->get_name()), STRING);
@@ -72,10 +78,10 @@ void E_Model::add_player(E_Player* player) {
     epilogue("E_Model", "add_player");
 }
 
-E_Player* E_Model::get_player(const string& name) {
+E_Player* E_Model::get_player(const string& name)
+{
     prologue("E_Model", "get_player");
     
-    // declare a return pointer
     E_Player* return_value = NULL;
     
     // look though the vector for the player, by name
@@ -112,6 +118,7 @@ void E_Model::go() {
             if (!waiting_for_input) {
                 waiting_for_input = true;
                 break;
+                
             } else if (waiting_for_input) {
                 waiting_for_input = false;
             }

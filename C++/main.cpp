@@ -6,38 +6,45 @@
 #include "E_View.h"
 #include "E_Terminal.h"
 
-void process_options(int argc, char* argv[]) {
+// processes command line args
+void process_args(int argc, char* argv[])
+{
     std::string option;
-    for (int i = 0; i < argc; i++){
+    
+    for (int i = 0; i < argc; i++) {
+        
         option = argv[i];
+        
         if (option == "-d" ||
-            option == "--debug") {
-            on_debug();
+            option == "--debug"
+        ) {
+            debug_on();
         }
     }
 }
 
-int main(int argc, char* argv[]) {
-    
-    process_options(argc, argv);
+int main(int argc, char* argv[])
+{
+    // TODO: use a proper command line option parser
+    process_args(argc, argv);
     
     // seed random generator
     srand(0);
-
-    // create a back-end
-    E_Model*        model       = new E_Model();
-    E_Controller*   controller  = new E_Controller(model);
     
-    // create a front-end
+    // create model and controller
+    E_Model* model = new E_Model();
+    E_Controller* controller = new E_Controller(model);
+    
+    // create view
+    // TODO: provide a way to choose among the different views
     E_Terminal* view = new E_Terminal(model, controller, argc, argv);
     
     // run the game
     view->run();
     
-    // delete the front-end
+    // free everything
+    // NOTE: the order of these matters
     delete view;
-    
-    // delete the back-end
     delete controller;
     delete model;
 

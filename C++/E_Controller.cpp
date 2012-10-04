@@ -5,7 +5,8 @@
 #include "E_Human.h"
 #include "E_AI.h"
 
-E_Controller::E_Controller(E_Model* model) {
+E_Controller::E_Controller(E_Model* model)
+{
     prologue("E_Controller");
     
     this->model = model;
@@ -13,12 +14,14 @@ E_Controller::E_Controller(E_Model* model) {
     epilogue("E_Controller");
 }
 
-E_Controller::~E_Controller() {
+E_Controller::~E_Controller()
+{
     prologue("E_Controller", "~E_Controller");
     epilogue("E_Controller", "~E_Controller");
 }
 
-void E_Controller::new_ai_game(const string& player_name) {
+void E_Controller::new_ai_game(const string& human_player_name)
+{
     prologue("E_Controller", "new_ai_game");
     
     // get AI player
@@ -26,27 +29,30 @@ void E_Controller::new_ai_game(const string& player_name) {
     interlude("ai_player->get_name()", &(ai_player->get_name()), STRING);
     
     // get human player
-    E_Player* human_player = this->model->get_player(player_name);
+    E_Player* human_player = this->model->get_player(human_player_name);
     assert(human_player != NULL);
     interlude("human_player->get_name()", &(human_player->get_name()), STRING);
     
+    // rudely delete the current game
     if (this->model->game != NULL) {
         delete this->model->game;
     }
     
-    // make the game
+    // make the new game
     this->model->game = new E_Game(human_player, ai_player);
     this->model->go();
     
     epilogue("E_Controller", "new_ai_game");
 }
 
-void E_Controller::new_human_game(const string& player_a_name, const string& player_b_name) {
+void E_Controller::new_human_game(const string& player_a_name, const string& player_b_name)
+{
     prologue("E_Controller", "new_human_game");
     epilogue("E_Controller", "new_human_game");
 }
 
-void E_Controller::make_move(const E_Color color) {
+void E_Controller::make_move(const E_Color color)
+{
     prologue("E_Controller", "make_move");
     
     if (model->game == NULL) {
@@ -58,7 +64,8 @@ void E_Controller::make_move(const E_Color color) {
     epilogue("E_Controller", "make_move");
 }
 
-void E_Controller::add_player(const string& player_name) {
+void E_Controller::add_player(const string& player_name)
+{
     prologue("E_Controller", "add_player");
     
     E_Player* new_player = new E_Human(player_name);
@@ -67,7 +74,8 @@ void E_Controller::add_player(const string& player_name) {
     epilogue("E_Controller", "add_player");
 }
 
-void E_Controller::add_player() {
+void E_Controller::add_player()
+{
     prologue("E_Controller", "add_player");
     
     E_Player* new_player = new E_Human();
