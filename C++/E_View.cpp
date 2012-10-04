@@ -24,9 +24,3 @@ E_View::~E_View() {
     
     epilogue("E_View", "~E_View");
 }
-
-void E_View::update() {
-    prologue("E_View", "update");
-    epilogue("E_View", "update");
-    return;
-}
