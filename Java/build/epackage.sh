@@ -1,4 +1,4 @@
 #! /bin/bash
 
-jar cvfm Encroach.jar emanifest.mf *.class
-mv Encroach.jar ../
+jar cvfm encroach emanifest.mf *.class
+mv encroach ../

@@ -1,9 +1,19 @@
+# C compiled files
 *.out
-.DS_Store
-*.class
-*.jar
-*.orig
 *.o
-*.d
 *.exe
-output.txt
+
+# Mac OS generated files
+.DS_Store
+
+# Java compiled files
+*.class
+
+# Mercurial generated files
+*.orig
+
+# generated Makefiles
+*.d
+
+# compiled program
+encroach
