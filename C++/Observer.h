@@ -1,7 +1,7 @@
-#ifndef _E_OBSERVER_
-#define _E_OBSERVER_
+#ifndef _OBSERVER_
+#define _OBSERVER_
 
-class E_Observer {
+class Observer {
     public:
         virtual void update() = 0;
         

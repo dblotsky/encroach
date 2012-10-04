@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "E_Subject.h"
+#include "Subject.h"
 #include "E_Game.h"
 #include "E_Player.h"
 
@@ -12,7 +12,7 @@ using std::string;
 
 class E_Controller;
 
-class E_Model: public E_Subject {
+class E_Model: public Subject {
     public:
         E_Model();
         ~E_Model();

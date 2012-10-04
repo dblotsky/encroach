@@ -2,20 +2,20 @@
 #define _E_SUBJECT_
 
 #include <set>
-#include "E_Observer.h"
+#include "Observer.h"
 
 using std::set;
 
-class E_Subject {
+class Subject {
     public:
-        void subscribe(E_Observer*);
-        void unsubscribe(E_Observer*);
+        void subscribe(Observer*);
+        void unsubscribe(Observer*);
         
     protected:
         void notify();
         
     private:
-        set<E_Observer*> observers;
+        set<Observer*> observers;
         
 };
 
