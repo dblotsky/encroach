@@ -6,6 +6,8 @@
 
 using std::string;
 
+#define MAX_COMMAND_LENGTH 256
+
 enum CommandType {QUIT, PRINT, EMPTY, DEBUG, MOVE, START_AI_GAME, ADD_PLAYER, INVALID};
 
 class E_Command {
@@ -13,7 +15,7 @@ class E_Command {
         E_Command();
         virtual ~E_Command();
         
-        void process(const string& command_string);
+        void parse(const string& command_string);
         CommandType get_type() const;
         const string& str() const;
         

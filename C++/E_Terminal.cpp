@@ -15,7 +15,14 @@ using std::cerr;
 using std::cin;
 using std::endl;
 
-E_Terminal::E_Terminal(E_Model* model, E_Controller* controller, int argc, char* argv[]): E_View(model, controller) {
+E_Terminal::E_Terminal(
+    E_Model* model, 
+    E_Controller* controller, 
+    int argc, 
+    char* argv[]
+): 
+    E_View(model, controller)
+{
     prologue("E_Terminal");
     epilogue("E_Terminal");
 }
@@ -25,15 +32,16 @@ E_Terminal::~E_Terminal() {
     epilogue("E_Terminal", "~E_Terminal");
 }
 
-void E_Terminal::run() {
+void E_Terminal::run()
+{
     prologue("E_Terminal", "run");
     
     // char array, string, and E_Command to store entered command
-    char raw_command[256];
+    char raw_command[MAX_COMMAND_LENGTH];
     string command_string = "";
     E_Command command;
     
-    // exit flag
+    // flags
     bool exited = false;
     
     // loop a prompt while cin is good and while the user has not exited
@@ -42,9 +50,9 @@ void E_Terminal::run() {
         print_prompt();
         
         // process input
-        cin.getline(raw_command, 256);
+        cin.getline(raw_command, MAX_COMMAND_LENGTH);
         command_string = raw_command;
-        command.process(command_string);
+        command.parse(command_string);
         
         // report command string
         interlude("command.str()", &(command.str()), STRING);
@@ -68,6 +76,7 @@ void E_Terminal::run() {
                 break;
                 
             case START_AI_GAME:
+                // TODO: determine the player according to some scheme
                 controller->new_ai_game("Player 1");
                 break;
                 
@@ -84,8 +93,8 @@ void E_Terminal::run() {
                 break;
                 
             default:
-                // throw unhandled_enum_value;
-                cerr << endl << "Got an enum value for which a case does not exist." << endl;
+                // TODO: throw an exception for an unhandled enum value
+                cerr << endl << "Got an unknown command type!" << endl;
                 assert(false);
         }
     }
@@ -95,7 +104,8 @@ void E_Terminal::run() {
     return;
 }
 
-void E_Terminal::update() {
+void E_Terminal::update()
+{
     prologue("E_Terminal", "update");
     
     print_board();
@@ -104,7 +114,8 @@ void E_Terminal::update() {
     return;
 }
 
-void E_Terminal::print_board() {
+void E_Terminal::print_board()
+{
     prologue("E_Terminal", "print_board");
     
     int x_size = model->get_board_x_size();

@@ -1,5 +1,6 @@
 #include <string>
 #include <cctype>
+#include <assert>
 #include "E_Reporter.h"
 #include "E_Command.h"
 
@@ -31,8 +32,12 @@ const string& E_Command::str() const {
     return lexeme;
 }
 
-void E_Command::process(const string& command_string) {
-    prologue("E_Command", "process");
+void E_Command::parse(const string& command_string)
+{
+    prologue("E_Command", "parse");
+    
+    // check for max command length
+    assert(command_string.length() <= MAX_COMMAND_LENGTH);
     
     lexeme = command_string;
     
@@ -74,7 +79,7 @@ void E_Command::process(const string& command_string) {
         type = INVALID;
     }
     
-    epilogue("E_Command", "process");
+    epilogue("E_Command", "parse");
     return;
 }
 

@@ -3,7 +3,8 @@
 #include "E_Controller.h"
 #include "E_View.h"
 
-E_View::E_View(E_Model* model, E_Controller* controller) {
+E_View::E_View(E_Model* model, E_Controller* controller)
+{
     prologue("E_View");
     
     // set model and controller
@@ -16,7 +17,8 @@ E_View::E_View(E_Model* model, E_Controller* controller) {
     epilogue("E_View");
 }
 
-E_View::~E_View() {
+E_View::~E_View()
+{
     prologue("E_View", "~E_View");
     
     // un-register view from the model

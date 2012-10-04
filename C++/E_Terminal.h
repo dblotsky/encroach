@@ -3,6 +3,7 @@
 
 #include "E_Model.h"
 #include "E_Controller.h"
+#include "E_Command.h"
 #include "E_View.h"
 
 class E_Terminal: public E_View {
