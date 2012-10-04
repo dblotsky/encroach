@@ -28,7 +28,8 @@ const string END_CHAR           = "\\";
 const int    NUM_EXCLUDED_CLASSES = 2;
 const int    NUM_EXCLUDED_METHODS = 5;
 const string EXCLUDED_CLASSES[NUM_EXCLUDED_CLASSES] = {
-    "E_Command", "E_Color"
+    "E_Command",
+    "E_Color"
 };
 const string EXCLUDED_METHODS[NUM_EXCLUDED_METHODS] = {
     "print_prompt", 
@@ -39,23 +40,24 @@ const string EXCLUDED_METHODS[NUM_EXCLUDED_METHODS] = {
 };
 
 // statics
-static int  stack_depth = 0;
+static int stack_depth = 0;
 static bool debug = false;
 static bool been_function_at_depth  = false;
 static bool been_value_at_depth     = false;
 
-void report_value(const string& value_name, const string& value) {
-    string report_string = QUOTE + value_name + QUOTE + ": " + QUOTE + value + QUOTE;
+void report_a_value(const string& value_name, const string& value)
+{
+    string report_string = "\"" + value_name + "\": \"" + value + "\"";
     debug_print(report_string, true);
 }
 
-void report_function(const ReportStage stage, const string& class_name, const string& function_name) {
-    
+void report_a_function(const ReportStage stage, const string& class_name, const string& function_name)
+{
     string start_label, end_label, message;
     
     // get proper message, start label, and end label
     switch(get_function_type(class_name, function_name)) {
-        case PROCEDURE:
+        case FUNCTION:
             message     = QUOTE + function_name + QUOTE;
             start_label = PRCD_START_LABEL;
             end_label   = PRCD_END_LABEL;
@@ -76,7 +78,7 @@ void report_function(const ReportStage stage, const string& class_name, const st
             end_label   = DSTR_END_LABEL;
             break;
         default:
-            cerr << "Got function type for which there is no case." << endl;
+            cerr << "Got an invalid function type!" << endl;
             assert(false);
     }
     
@@ -91,7 +93,8 @@ void report_function(const ReportStage stage, const string& class_name, const st
 }
 
 // returns first string argument if stage is START; returns second string argument if stage is END
-string start_or_end(ReportStage stage, const string& start_string, const string& end_string) {
+string start_or_end(ReportStage stage, const string& start_string, const string& end_string)
+{
     if (stage == START) {
         return start_string;
     } else if (stage == END) {
@@ -103,23 +106,23 @@ string start_or_end(ReportStage stage, const string& start_string, const string&
 }
 
 // returns a type of function based on passed class name and function name
-FunctionType get_function_type(const string& class_name, const string& function_name) {
-    
+FunctionType get_function_type(const string& class_name, const string& function_name)
+{
     // class name and function name must not both be empty
     assert(!(class_name == "" && function_name == ""));
     
     string constructor_name = class_name;
     string destructor_name  = string("~") + class_name;
 
-    // PROCEDURE: empty class name
+    // FUNCTION: empty class name
     if (class_name == "" && function_name != "") {
-        return PROCEDURE;
+        return FUNCTION;
 
     // CONSTRUCTOR: function name is class name
     } else if (function_name == constructor_name || (class_name != "" && function_name == "")) {
         return CONSTRUCTOR;
 
-    // DESTRUCTOR: function name is class name preceded by a tilde
+    // DESTRUCTOR: function name is class name preceded by a tilde (i.e. "~ClassName")
     } else if (function_name == destructor_name) {
         return DESTRUCTOR;
 
@@ -130,39 +133,51 @@ FunctionType get_function_type(const string& class_name, const string& function_
 }
 
 // prints debug info at the beginning of a function
-void prologue(const string& class_name, const string& function_name) {
+void prologue(const string& class_name, const string& function_name)
+{
+    if (!debug) {
+        return;
+    }
     
-    if (!debug) { return; }
-    if (is_excluded(class_name, function_name)) { return; }
+    if (is_excluded(class_name, function_name)) {
+        return;
+    }
     
     // skip a line if there has been a report at the current depth
-    if (been_function_at_depth || been_value_at_depth) { debug_indent_line(); }
+    if (been_function_at_depth || been_value_at_depth) { debug_indented_line(); }
     
-    report_function(START, class_name, function_name);
+    report_a_function(START, class_name, function_name);
     increment_depth();
 
     return;
 }
 
 // prints debug info at the end of a function
-void epilogue(const string& class_name, const string& function_name) {
+void epilogue(const string& class_name, const string& function_name)
+{
+    if (!debug) {
+        return;
+    }
     
-    if (!debug) { return; }
-    if (is_excluded(class_name, function_name)) { return; }
+    if (is_excluded(class_name, function_name)) {
+        return;
+    }
     
     decrement_depth();
-    report_function(END, class_name, function_name);
+    report_a_function(END, class_name, function_name);
     
     return;
 }
 
 // prints debug info in the body of a function
-void interlude(const string& name, const void* value, PointerType type) {
-    
-    if (!debug) { return; }
+void interlude(const string& name, const void* value, PointerType type)
+{
+    if (!debug) {
+        return;
+    }
 
     // skip a line if needed
-    if (been_function_at_depth && !been_value_at_depth) { debug_indent_line(); }
+    if (been_function_at_depth && !been_value_at_depth) { debug_indented_line(); }
 
     // make a string out of the value
     stringstream value_stream;
@@ -203,7 +218,7 @@ void interlude(const string& name, const void* value, PointerType type) {
     string value_string = value_stream.str();
 
     stay_at_depth();
-    report_value(name, value_string);
+    report_a_value(name, value_string);
     
     return;
 }
@@ -228,7 +243,8 @@ void decrement_depth() {
 }
 
 // returns true if the current class or function name is excluded from debugging
-bool is_excluded(const string& class_name, const string& method_name) {
+bool is_excluded(const string& class_name, const string& method_name)
+{
     for(int i = 0; i < NUM_EXCLUDED_CLASSES; i++) {
         if (class_name == EXCLUDED_CLASSES[i]) {
             return true;
@@ -243,7 +259,8 @@ bool is_excluded(const string& class_name, const string& method_name) {
 }
 
 // toggles debugging on/off
-void toggle_debug() {
+void toggle_debug()
+{
     if (debug) {
         debug = false;
         return;
@@ -253,19 +270,20 @@ void toggle_debug() {
 }
 
 // turns debugging on
-void on_debug() {
+void debug_on() {
     debug = true;
     return;
 }
 
 // turns debugging off
-void off_debug() {
+void debug_off() {
     debug = false;
     return;
 }
 
 // builds a string of n tokens
-string build_string(const string& token, const int n) {
+string build_string(const string& token, const int n)
+{
     string return_string;
     for (int i = 0; i < n; i++) {
         return_string += token;
@@ -279,14 +297,15 @@ string indent_buffer() {
 }
 
 // returns the alignment buffer
-string alignment_buffer(const int num_chars_already_printed) {
+string alignment_buffer(const int num_chars_already_printed)
+{
     int buffer_length = (ALIGN_BUFFER_SIZE - (stack_depth * INDENT_TOKEN.size()) - num_chars_already_printed);
     return build_string(ALIGN_BUFFER_CHAR, buffer_length);
 }
 
-// prints debug messages
-void debug_print(const string& message, bool indented, bool aligned, const string start_token) {
-    
+// prints a debug message
+void debug_print(const string& message, bool indented, bool aligned, const string start_token)
+{
     cerr << DEBUG_MARKER;
     
     if (indented) {
@@ -304,7 +323,7 @@ void debug_print(const string& message, bool indented, bool aligned, const strin
 }
 
 // prints an indented line
-void debug_indent_line() {
+void debug_indented_line() {
     debug_print("", true);
     return;
 }
