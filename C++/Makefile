@@ -8,25 +8,20 @@ DEPFLAGS = -MMD
 CXXFLAGS  = -Wall -O -g $(DEPFLAGS)
 
 # objects
-VIEW_OBJS = Observer.o E_View.o E_Terminal.o E_Command.o
-
-CTRL_OBJS = E_Controller.o
-
-PLAY_OBJS = E_Owner.o E_Neutral.o E_Player.o E_Human.o E_AI.o
-GAME_OBJS = E_Color.o E_Node.o E_Game.o
-MODL_OBJS = Subject.o E_Model.o $(GAME_OBJS) $(PLAY_OBJS)
-
-MAIN_OBJS = main.o E_Reporter.o E_Exception.o
+VIEW_OBJS = Observer E_View E_Terminal E_Command
+CTRL_OBJS = E_Controller
+MODL_OBJS = Subject E_Node E_Game E_Owner E_Neutral E_Player E_Human E_AI E_Color E_Model
+MAIN_OBJS = main E_Reporter E_Exception
 
 # outputs
-OBJECTS = $(MAIN_OBJS) $(VIEW_OBJS) $(MODL_OBJS) $(CTRL_OBJS)
+OBJECTS = $(MAIN_OBJS=.o) $(VIEW_OBJS=.o) $(MODL_OBJS=.o) $(CTRL_OBJS=.o)
 DEPENDENCIES = ${OBJECTS:.o=.d}
 EXECUTABLE = encroach
 
-run:: build
+run:: $(EXECUTABLE)
 	./$(EXECUTABLE)
 
-build all:: $(EXECUTABLE)
+build:: $(EXECUTABLE)
 
 $(EXECUTABLE):: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXECUTABLE)

@@ -7,17 +7,20 @@ JFLAGS =
 JARFLAGS = cvfm
 
 # sources and manifest
-CLASSES  = EPlayer EBoard ESquare
-MAIN     = Encroach.jar
+# TODO: ensure that there is ONLY ONE CLASS PER FILE
+CLASSES = Encroach EPlayer EBoard ESquare ETerminal
+EXECUTABLE = Encroach.jar
 MANIFEST = Manifest.mf
 
 # files
 SOURCES = $(CLASSES:=.java)
 OBJECTS = $(SOURCES:.java=.class)
 
-build: $(MAIN)
+# main rule
+run: $(EXECUTABLE)
+	java -jar $(EXECUTABLE)
 
-$(MAIN): $(OBJECTS)
+$(EXECUTABLE): $(OBJECTS)
 
 %.class: %.java
 	$(JC) $(JFLAGS) $<
@@ -26,4 +29,4 @@ $(MAIN): $(OBJECTS)
 	$(JAR) $(JARFLAGS) $@ $(MANIFEST) *.class
 
 clean:
-	$(RM) *.class $(MAIN) 
+	$(RM) *.class $(EXECUTABLE) 

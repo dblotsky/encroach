@@ -1,23 +1,15 @@
-usage:
-	@echo "usage:"
-	@echo "    make [c|java|python]"
+IMPLEMENTATIONS = java c++
 
-java Java:
-	(cd Java && $(MAKE))
-	cp Java/encroach .
+default::
+	@echo "Please select an implementation to build:" $(IMPLEMENTATIONS)
+
+java:
+	(cd $@ && $(MAKE))
+
+c++:
+	(cd $@ && $(MAKE))
 	
-c c++ C C++:
-	(cd C++ && $(MAKE))
-	cp C++/encroach .
-
-run:
-	./encroach
+clean: $(IMPLEMENTATIONS)
+	(cd $< && $(MAKE) $@)
 	
-clean:
-	(cd Java && $(MAKE) $@)
-	(cd C++ && $(MAKE) $@)
-
-python Python:
-	@echo "Python version not implemented yet."
-
-.PHONY: usage Java c C++ C c++ python Python
+.PHONY: $(IMPLEMENTATIONS)
