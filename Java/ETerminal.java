@@ -43,8 +43,8 @@ public class ETerminal {
         this.COLOR = false;
         
         this.NUM_COLORS = 6;
-        this.X_SIZE = 24;
-        this.Y_SIZE = 24;
+        this.X_SIZE = 10;
+        this.Y_SIZE = 10;
         
         this.player_1 = new EPlayer("Player 1", 0);
         this.player_2 = new EPlayer("Player 2", 0);
@@ -236,11 +236,18 @@ public class ETerminal {
                 print_board();
             
             // display helpful text
-            } else if(line_in.equals("rules") || line_in.equals("options") || line_in.equals("howto") || line_in.equals("help")) {
-                print_text(line_in);
-            
-            // display helpful text
-            } else if(line_in.equals("options") || line_in.equals("o")) {
+            } else if (
+                line_in.equals("rules") ||
+                line_in.equals("help") || 
+                line_in.equals("h")
+            ) {
+                print_text("rules");
+                
+            // for help, print options
+            } else if (
+                line_in.equals("options") || 
+                line_in.equals("o")
+            ) {
                 print_text("options");
             
             // display the board
@@ -263,7 +270,8 @@ public class ETerminal {
                 // get the winner
                 EPlayer winner = board.winner();
                 
-                // fill the board
+                // in a very cruel manner, fill the board
+                /*
                 while(!board.filled()) {
                     
                     int color = winner.ai_next_color_choice(board);
@@ -287,10 +295,12 @@ public class ETerminal {
                     System.out.println("");
                     print_board();
                 }
+                */
                 
                 // print score and winner
                 System.out.println("");
                 System.out.println(winner.get_name() + " wins.");
+                System.out.println("");
                 print_score();
                 
                 // reset the board for a new game
@@ -346,7 +356,8 @@ public class ETerminal {
     
     /** Displays the current score. **/
     public void print_score() {
-        System.out.println(board.player_1.get_name() + ": " + Integer.toString(board.player_1.get_score()) + ", " + board.player_2.get_name() + ": " + Integer.toString(board.player_2.get_score()) + ".");
+        System.out.println(board.player_1.get_name() + ": " + Integer.toString(board.player_1.get_score()) + ".");
+        System.out.println(board.player_2.get_name() + ": " + Integer.toString(board.player_2.get_score()) + ".");
     }
     
     /** Calls square_to_string() with force_plain set to false. **/
@@ -401,17 +412,20 @@ public class ETerminal {
     /** Prints various helful text. **/
     public void print_text(String choice) {
         if(choice.equals("welcome")) {
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
             System.out.println("|             Welcome to Encroach!                |");
         } else if(choice.equals("options")) {
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
             System.out.println("|                                                 |");
-            System.out.println("| Available options:                              |");
+            System.out.println("| Available commands:                             |");
             System.out.println("|                                                 |");
+            System.out.println("|    h | help | rules  - explains how to play     |");
+            System.out.println("|    o | options       - displays this            |");
+            System.out.println("|                                                 |");
+            System.out.println("|    c | color         - toggles ANSI colors      |");
             System.out.println("|    r | reset         - resets the board         |");
             System.out.println("|    s | score         - shows the score          |");
             System.out.println("|    w | winloss       - shows wins/losses        |");
-            System.out.println("|    c | color         - toggles ANSI colors      |");
             System.out.println("|    q | quit | exit   - quits the game           |");
             System.out.println("|                                                 |");
             System.out.println("|    d | display       - displays the board       |");
@@ -419,39 +433,33 @@ public class ETerminal {
             System.out.println("|                                                 |");
             System.out.println("|    single digit      - makes a move             |");
             System.out.println("|                                                 |");
-            System.out.println("|    o | options       - displays the options     |");
-            System.out.println("|    rules             - prints the rules         |");
-            System.out.println("|    help              - shows the help text      |");
-            System.out.println("|    howto             - explains how to play     |");
-            System.out.println("|                                                 |");
             System.out.println("| NOTE: To run in color, you MUST be using a      |");
             System.out.println("|       terminal that supports ANSI escape codes  |");
             System.out.println("|       for colored text. If they're not          |");
             System.out.println("|       supported, you will see ugly things.      |");
             System.out.println("|                                                 |");
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
         } else if(choice.equals("help")) {
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
             System.out.println("|                Encroach on Java                 |");
             System.out.println("|                                                 |");
             System.out.println("|                March 15th, 2011                 |");
             System.out.println("|                                                 |");
             System.out.println("|   Written by Ryan Bateman and Dmitry Blotsky    |");
-            System.out.println("|-------------------------------------------------|");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
             System.out.println("|                                                 |");
             System.out.println("| Running the game:                               |");
             System.out.println("|                                                 |");
             System.out.println("|    The game works in a GUI or a terminal UI. To |");
-            System.out.println("| run in GUI, simply double-click it. To run in   |");
-            System.out.println("| terminal, pass it either the '--terminal' or    |");
-            System.out.println("| the '-t' flag.                                  |");
+            System.out.println("| run in terminal, simply double-click it. To run |");
+            System.out.println("| in GUI, pass it the '--gui' or the '-g' flag.   |");
             System.out.println("|                                                 |");
-            System.out.println("|-------------------------------------------------|");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
             System.out.println("|                                                 |");
             System.out.println("| Available flags:                                |");
             System.out.println("|                                                 |");
             System.out.println("|    -c | --color                                 |");
-            System.out.println("|    -t | --terminal                              |");
+            System.out.println("|    -g | --gui                                   |");
             System.out.println("|                                                 |");
             System.out.println("| Available settings \"--[name]=[value]\":          |");
             System.out.println("|                                                 |");
@@ -469,42 +477,35 @@ public class ETerminal {
             System.out.println("|    p1_name       string of " + MIN_NAME_LENGTH + " to " + MAX_NAME_LENGTH + " characters   |");
             System.out.println("|    p2_name       (same as above)                |");
             System.out.println("|                                                 |");
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
         } else if(choice.equals("rules")) {
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
             System.out.println("|                                                 |");
             System.out.println("| Rules:                                          |");
             System.out.println("|                                                 |");
-            System.out.println("|    - YOU start in TOP LEFT corner               |");
-            System.out.println("|    - OPPONENT starts in BOTTOM RIGHT corner     |");
-            System.out.println("|                                                 |");
-            System.out.println("|    - you CAN'T choose the OPPONENT'S color or   |");
-            System.out.println("|      your OWN color                             |");
-            System.out.println("|                                                 |");
-            System.out.println("|    - game ends when either player owns more     |");
-            System.out.println("|      than HALF OF THE BOARD                     |");
-            System.out.println("|                                                 |");
-            System.out.println("+-------------------------------------------------+");
-        } else if(choice.equals("howto")) {
-            System.out.println("+-------------------------------------------------+");
-            System.out.println("|                                                 |");
-            System.out.println("| How to play:                                    |");
-            System.out.println("|                                                 |");
             System.out.println("|    The point of the game is to encroach upon    |");
             System.out.println("| more squares than your opponent. You own the    |");
-            System.out.println("| square on which you start (top left), and all   |");
-            System.out.println("| the squares that are connected to it - above,   |");
-            System.out.println("| to the left, to the right, and below.           |");
+            System.out.println("| square on which you start (TOP LEFT), and your  |");
+            System.out.println("| opponent owns the square on which they start    |");
+            System.out.println("| (BOTTOM RIGHT).                                 |");
             System.out.println("|                                                 |");
             System.out.println("| You may encroach upon more squares by changing  |");
             System.out.println("| color, thus connecting yourself to more         |");
-            System.out.println("| squares.                                        |");
+            System.out.println("| squares. To change color, simply enter its      |");
+            System.out.println("| number. You may NOT pick YOUR OPPONENT'S color  |");
+            System.out.println("| or YOUR CURRENT color.                          |");
             System.out.println("|                                                 |");
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("| The game ends when either player owns more than |");
+            System.out.println("| HALF of the squares on the board. You may see   |");
+            System.out.println("| the current square ownership by typing \"s\" or   |");
+            System.out.println("| \"score\".                                        |");
+            System.out.println("|                                                 |");
+            System.out.println("| To see more options, type \"o\" or \"options\".     |");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
         } else if(choice.equals("new_game")) {
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
             System.out.println("|                    New Game                     |");
-            System.out.println("+-------------------------------------------------+");
+            System.out.println("+ - - - - - - - - - - - - - - - - - - - - - - - - +");
         }
         return;
     }
