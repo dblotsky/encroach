@@ -3,13 +3,12 @@ IMPLEMENTATIONS = java c++
 default::
 	@echo "Please select an implementation to build:" $(IMPLEMENTATIONS)
 
-java:
+$(IMPLEMENTATIONS):
 	(cd $@ && $(MAKE))
+	(cp $@/encroach* .)
 
-c++:
-	(cd $@ && $(MAKE))
-	
-clean: $(IMPLEMENTATIONS)
-	(cd $< && $(MAKE) $@)
-	
+clean:
+	(cd java && $(MAKE) clean)
+	(cd c++ && $(MAKE) clean)
+
 .PHONY: $(IMPLEMENTATIONS)
