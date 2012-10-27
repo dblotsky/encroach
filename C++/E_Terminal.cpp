@@ -51,7 +51,7 @@ void E_Terminal::run()
         
         // process input
         cin.getline(raw_command, MAX_COMMAND_LENGTH);
-        command_string = raw_command;
+        command_string = string(raw_command);
         command.parse(command_string);
         
         // report command string

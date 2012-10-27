@@ -7,8 +7,10 @@ $(IMPLEMENTATIONS):
 	(cd $@ && $(MAKE))
 	(cp $@/encroach* .)
 
+all:
+	$(foreach implementation, $(IMPLEMENTATIONS), $(MAKE) ${implementation};)
+
 clean:
-	(cd java && $(MAKE) clean)
-	(cd c++ && $(MAKE) clean)
+	$(foreach implementation, $(IMPLEMENTATIONS), $(MAKE) ${clean};)
 
 .PHONY: $(IMPLEMENTATIONS)

@@ -15,5 +15,6 @@
 # generated Makefiles
 *.d
 
-# compiled program
+# executables
 encroach
+encroach.jar
