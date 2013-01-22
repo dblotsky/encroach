@@ -355,9 +355,23 @@ public class ETerminal {
     }
     
     /** Displays the current score. **/
-    public void print_score() {
-        System.out.println(board.player_1.get_name() + ": " + Integer.toString(board.player_1.get_score()) + ".");
-        System.out.println(board.player_2.get_name() + ": " + Integer.toString(board.player_2.get_score()) + ".");
+    public void print_score()
+    {
+        int winning_score = board.get_winning_score();
+
+        System.out.println(Integer.toString(winning_score) + " needed to win.");
+        System.out.println("");
+
+        System.out.println(
+            board.player_1.get_name() + ": " + 
+            Integer.toString(board.player_1.get_score()) + 
+            " (" + Integer.toString(winning_score - board.player_1.get_score()) + " more to go)."
+        );
+        System.out.println(
+            board.player_2.get_name() + ": " + 
+            Integer.toString(board.player_2.get_score()) + 
+            " (" + Integer.toString(winning_score - board.player_2.get_score()) + " more to go)."
+        );
     }
     
     /** Calls square_to_string() with force_plain set to false. **/

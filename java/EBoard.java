@@ -360,6 +360,11 @@ class EBoard {
     public ESquare[][] get_field() {
         return this.field;
     }
+
+    /** Returns the score needed to win. **/
+    public int get_winning_score() {
+        return this.winning_score;
+    }
     
     /** Returns the winner of the game. **/
     public EPlayer winner() {
