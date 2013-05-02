@@ -1,33 +1,29 @@
-# compiler and archiver
-JC = javac
-JAR = jar
-
-# flags
-JFLAGS = 
+JC       = javac
+JAR      = jar
+JFLAGS   = 
 JARFLAGS = cvfm
 
 # sources and manifest
-# TODO: ensure that there is ONLY ONE CLASS PER FILE
-CLASSES = Encroach EPlayer EBoard ESquare ETerminal
+SOURCES  = Encroach EPlayer EBoard ESquare ETerminal
 MANIFEST = Manifest.mf
 
-# intermediate outputs
-OBJECTS = $(CLASSES:=.class)
+# intermediates
+CLASSES = $(SOURCES:=.class)
 ARCHIVE = Encroach.jar
 
-# final output
+# output
 EXECUTABLE = encroach.jar
 
-# main rule
-$(EXECUTABLE): $(ARCHIVE)
-	mv $(ARCHIVE) $(EXECUTABLE)
-
+# rules
 all build: $(EXECUTABLE)
 
 run: build
 	java -jar $(EXECUTABLE)
 
-$(ARCHIVE): $(OBJECTS)
+$(EXECUTABLE): $(ARCHIVE)
+	mv $(ARCHIVE) $(EXECUTABLE)
+
+$(ARCHIVE): $(CLASSES) $(MANIFEST)
 
 %.class: %.java
 	$(JC) $(JFLAGS) $<
@@ -36,4 +32,4 @@ $(ARCHIVE): $(OBJECTS)
 	$(JAR) $(JARFLAGS) $@ $(MANIFEST) *.class
 
 clean:
-	$(RM) *.class $(EXECUTABLE) 
+	$(RM) *.class $(EXECUTABLE)

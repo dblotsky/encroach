@@ -1,35 +1,34 @@
-# compilation
-CXX = g++
-
-# dependency flags - generate .d makefiles based on #include directives
+CXX      = g++
 DEPFLAGS = -MMD
-
-# other flags
-CXXFLAGS  = -Wall -O -g $(DEPFLAGS)
+CXXFLAGS = -Wall -O -g $(DEPFLAGS)
 
 # objects
 VIEW_OBJS = Observer E_View E_Terminal E_Command
 CTRL_OBJS = E_Controller
 MODL_OBJS = Subject E_Node E_Game E_Owner E_Neutral E_Player E_Human E_AI E_Color E_Model
 MAIN_OBJS = main E_Reporter E_Exception
+ALL_OBJS  = $(MAIN_OBJS) $(VIEW_OBJS) $(MODL_OBJS) $(CTRL_OBJS)
 
-# intermediate outputs
-OBJECTS = $(MAIN_OBJS:=.o) $(VIEW_OBJS:=.o) $(MODL_OBJS:=.o) $(CTRL_OBJS:=.o)
-DEPENDENCIES = ${OBJECTS:.o=.d}
+# intermediates
+OBJECTS 	 = $(ALL_OBJS:=.o)
+DEPENDENCIES = $(ALL_OBJS:=.d)
 
-# final outputs
+# output
 EXECUTABLE = encroach
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXECUTABLE)
-
-build: $(EXECUTABLE)
+# rules
+all build: $(EXECUTABLE)
 
 run: $(EXECUTABLE)
 	./$(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
 clean:
 	$(RM) $(DEPENDENCIES) $(OBJECTS) $(EXECUTABLE)
 
 # include generated dependency makefiles
 -include $(DEPENDENCIES)
+
+.PHONY: all build clean

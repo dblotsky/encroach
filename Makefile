@@ -1,16 +1,17 @@
-IMPLEMENTATIONS = java c++
-
 default::
-	@echo "Please select an implementation to build:" $(IMPLEMENTATIONS)
+	@echo "Please select an implementation to build:"
+	@echo "    make java"
+	@echo "    make c++"
+	@echo "    make all"
 
-$(IMPLEMENTATIONS):
-	(cd $@ && $(MAKE))
-	(cp $@/encroach* .)
+all: java c++
 
-all:
-	$(foreach implementation, $(IMPLEMENTATIONS), $(MAKE) ${implementation};)
+java c++:
+	@(cd $@ && $(MAKE))
+	@cp $@/encroach* .
 
 clean:
-	$(foreach implementation, $(IMPLEMENTATIONS), $(MAKE) ${clean};)
+	@(cd java && $(MAKE) clean)
+	@(cd c++ && $(MAKE) clean)
 
-.PHONY: $(IMPLEMENTATIONS)
+.PHONY: java c++ all clean
