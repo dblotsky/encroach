@@ -17,6 +17,14 @@ or:
 
 This game doesn't yet come in a neat OS-targeted package, so running each implementation will be different.
 
+#### Java
+
+The Makefile creates a .jar file, which can be executed from the command line like so:
+
+    java -jar encroach.jar
+
+[filler]: http://games.mail.ru/pc/games/filler/
+
 #### C / C++
 
 The Makefile produces an executable binary. Just execute the file:
@@ -27,11 +35,3 @@ If permissions are a problem, allow the binary to be executable first:
 
     chmod +x encroach
     ./encroach
-
-#### Java
-
-The Makefile creates a .jar file, which can be executed from the command line like so:
-
-    java -jar encroach.jar
-
-[filler]: http://games.mail.ru/pc/games/filler/
